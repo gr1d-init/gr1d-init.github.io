@@ -152,6 +152,13 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"post": {
+"customize/index.md": {
+	id: "customize/index.md";
+  slug: "customize";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
 "markdown/index.md": {
 	id: "markdown/index.md";
   slug: "markdown";
