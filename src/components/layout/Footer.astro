@@ -12,7 +12,8 @@ const SocialMediaIconId: Record<string, string> = {
   zhihu: 'ri-zhihu-line',
   steam: 'ri-steam-line',
   netease_music: 'ri-netease-cloud-music-line',
-  mail: 'mingcute-mail-line'
+  mail: 'mingcute-mail-line',
+  linkedin: 'mingcute-linkedin-line'
 }
 ---
 
@@ -36,6 +37,8 @@ const SocialMediaIconId: Record<string, string> = {
               <a
                 class='inline-block text-muted-foreground transition-all hover:text-muted-foreground/75'
                 href={platform.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={platform.name}
               >
                 <svg class='size-6'>
@@ -48,6 +51,8 @@ const SocialMediaIconId: Record<string, string> = {
           <a
             class='inline-block text-muted-foreground transition-all hover:text-muted-foreground/75'
             href='/rss.xml'
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label='rss'
           >
             <svg class='size-6'>

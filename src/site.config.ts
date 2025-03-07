@@ -47,6 +47,10 @@ export const footerConfig: FooterConfig = {
     {
       name: 'github',
       url: 'https://github.com/gr1d-init'
+    },
+    {
+      name: 'linkedin',
+      url: 'https://www.linkedin.com/in/qs220a'
     }
   ]
 }

@@ -24,6 +24,7 @@ export interface SocialLink {
     | 'steam'
     | 'netease_music'
     | 'mail'
+    | 'linkedin'
   url: string
 }
 
