@@ -29,17 +29,6 @@ export interface SocialLink {
 
 export type ShareItem = 'weibo' | 'x' | 'bluesky'
 
-export type CardListData = {
-  title: string
-  list: CardList
-}
-
-export type CardList = {
-  title: string
-  link?: string
-  children?: CardList
-}[]
-
 export type TimelineEvent = {
   date: string
   content: string

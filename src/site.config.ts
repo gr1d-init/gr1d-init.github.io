@@ -1,4 +1,4 @@
-import type { CardListData, FooterConfig, IntegrationConfig, MenuLinks, SiteConfig } from '@/types'
+import type { FooterConfig, IntegrationConfig, MenuLinks, SiteConfig } from '@/types'
 
 export const siteConfig: SiteConfig = {
   // === Required meta properties ===

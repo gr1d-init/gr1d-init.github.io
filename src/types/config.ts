@@ -1,4 +1,4 @@
-import type { ShareItem, SocialLink, TimelineEvent } from './common'
+import type { ShareItem, SocialLink } from './common'
 
 export interface SiteConfig {
   author: string

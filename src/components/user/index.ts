@@ -6,7 +6,6 @@ export { default as Tabs } from './Tabs.astro'
 export { default as TabItem } from './TabItem.astro'
 
 // List
-export { default as CardList } from './CardList.astro'
 export { default as Timeline } from './Timeline.astro'
 export { default as Steps } from './Steps.astro'
 

@@ -14,11 +14,6 @@ const {
   class: className
 } = Astro.props
 
-const link = `${import.meta.env.SITE}/blog/${slug}`
-
-const image =
-  typeof data.heroImage?.src === 'string' ? data.heroImage?.src : (data.heroImage?.src?.src ?? '')
-
 ---
 
 <div
