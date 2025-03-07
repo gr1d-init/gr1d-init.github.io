@@ -51,13 +51,13 @@ const headings = [
 const { friends } = links
 ---
 
-<PageLayout title='About' {headings} info={{ slug: '/about', hideComment: true }}>
+<PageLayout title='About' {headings} info={{ slug: '/about'}}>
   <h2 id='naming' class="text-3xl font-bold flex w-full flex-col items-center"> 
       <Image
         src={profilepic}
         alt='profilepic'
         class='h-48 w-auto rounded-full border p-1'
-        loading='lazy'
+        loading='eager'
       />
       <div class="mt-4"></div>
       Kok Qi Sheng
