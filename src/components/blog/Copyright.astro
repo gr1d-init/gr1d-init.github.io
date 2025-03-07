@@ -1,0 +1,68 @@
+---
+import type { CollectionEntry } from 'astro:content'
+
+import { cn, getFormattedDate } from '@/utils'
+import { siteConfig } from '@/site-config'
+
+interface Props {
+  content: CollectionEntry<'post'>
+  class?: string
+}
+
+const {
+  content: { slug, data },
+  class: className
+} = Astro.props
+
+const link = `${import.meta.env.SITE}/blog/${slug}`
+
+const image =
+  typeof data.heroImage?.src === 'string' ? data.heroImage?.src : (data.heroImage?.src?.src ?? '')
+
+---
+
+<div
+  class={cn(
+    'relative flex flex-col gap-y-2 rounded-xl border px-3 sm:px-4 py-2 sm:py-3',
+    className
+  )}
+>
+  <svg class='absolute end-4 top-4 size-20 opacity-10'>
+    <use href='/icons/copyright-sponsor.svg#mingcute-copyright-line'></use>
+  </svg>
+
+  {/* title & link */}
+  <div class='flex flex-col'>
+    <div class='font-medium text-foreground'>{data.title}</div>
+    <div class='text-sm'>{import.meta.env.SITE}/blog/{slug}</div>
+  </div>
+
+  {/* common info */}
+  <div class='flex flex-row flex-wrap justify-start gap-x-5 gap-y-1 sm:gap-x-8'>
+    <div class='flex gap-x-2 sm:flex-col'>
+      <span>Author</span>
+      <span class='text-sm text-foreground max-sm:place-self-center'>{siteConfig.author}</span>
+    </div>
+    <div class='flex gap-x-2 sm:min-w-16 sm:flex-col'>
+      <span>Published at</span>
+      <span class='text-sm text-foreground max-sm:place-self-center'
+        >{
+          getFormattedDate(data.publishDate, {
+            month: 'long'
+          })
+        }</span
+      >
+    </div>
+    <div class='flex gap-x-2 sm:flex-col'>
+      <span>Copyright</span>
+      <a
+        class='text-sm text-foreground max-sm:place-self-center'
+        href='https://creativecommons.org/licenses/by/4.0/'
+        target='_blank'
+      >
+        CC BY-NC-SA 4.0
+      </a>
+    </div>
+  </div>
+</div>
+
