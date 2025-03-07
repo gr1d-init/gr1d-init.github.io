@@ -1,4 +1,4 @@
-import{c as n,r as a,m as t,u as o}from"./hoisted.DYpc-JQ7.js";import"./astro/assets-service.CScP7A7k.js";const e=`<h2 id="basic-syntax">Basic Syntax<a class="anchor" href="#basic-syntax">#</a></h2>
+import{c as n,r as a,m as t,u as o}from"./hoisted.BJRmFS3x.js";import"./astro/assets-service.CScP7A7k.js";const e=`<h2 id="basic-syntax">Basic Syntax<a class="anchor" href="#basic-syntax">#</a></h2>
 <p>Markdown is a lightweight and easy-to-use syntax for styling your writing.</p>
 <h3 id="headers">Headers<a class="anchor" href="#headers">#</a></h3>
 <p>When the content of the article is extensive, you can use headers to segment:</p>

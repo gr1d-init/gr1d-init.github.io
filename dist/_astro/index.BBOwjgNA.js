@@ -1,4 +1,4 @@
-import{c as o,r as t,m as i,u as a}from"./hoisted.DYpc-JQ7.js";import"./astro/assets-service.CScP7A7k.js";const n=`<h2 id="site-configuration">Site Configuration<a class="anchor" href="#site-configuration">#</a></h2>
+import{c as o,r as t,m as i,u as a}from"./hoisted.BJRmFS3x.js";import"./astro/assets-service.CScP7A7k.js";const n=`<h2 id="site-configuration">Site Configuration<a class="anchor" href="#site-configuration">#</a></h2>
 <p><a href="https://github.com/cworld1/astro-theme-pure" rel="nofollow, noopener, noreferrer" target="_blank">astro-theme-pure<span> ↗</span></a></p>
 <p>Customizing this theme requires adjusting a significant amount of source code.</p>
 <p>We have made efforts to centralize the configuration options in the <code>src/site.config.ts</code> file for user convenience and have integrated a variety of common social media/tools icons. If you want to add new icons, you will need to modify the source code yourself.</p>
