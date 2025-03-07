@@ -56,9 +56,10 @@ const { friends } = links
       <Image
         src={profilepic}
         alt='profilepic'
-        class='h-48 w-auto rounded-full border p-1'
+        class='h-48 w-auto rounded-full dark:rounded-full border p-1'
         loading='eager'
       />
+      {/* The rounded-full is missing at dark mode, cuz we're no in the html/body section macroscopically */}
       <div class="mt-4"></div>
       Kok Qi Sheng
   </h2>
