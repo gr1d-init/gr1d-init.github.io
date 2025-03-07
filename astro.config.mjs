@@ -4,8 +4,6 @@ import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import tailwind from '@astrojs/tailwind'
-// Adapter
-import vercelServerless from '@astrojs/vercel/serverless'
 // Integrations
 import icon from 'astro-icon'
 import { defineConfig } from 'astro/config'
@@ -18,7 +16,6 @@ import remarkMath from 'remark-math'
 import rehypeAutolinkHeadings from './src/plugins/rehypeAutolinkHeadings.ts'
 // Markdown
 import {
-  remarkAddZoomable,
   remarkArxivCards,
   remarkReadingTime
 } from './src/plugins/remarkPlugins.ts'
@@ -39,16 +36,6 @@ export default defineConfig({
   site: siteConfig.site,
   // base: '/docs',
   trailingSlash: 'never',
-  output: 'server',
-
-  // Adapter
-  // 1. Vercel (serverless)
-  adapter: vercelServerless(),
-  // 2. Vercel (static)
-  // adapter: vercelStatic(),
-  // 3. Local (standalone)
-  // adapter: node({ mode: 'standalone' }),
-  // ---
 
   image: {
     service: {
