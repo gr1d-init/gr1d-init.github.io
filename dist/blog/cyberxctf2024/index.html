@@ -1,0 +1,333 @@
+<!DOCTYPE html><html lang=en-US><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1,shrink-to-fit=no" name=viewport><meta content="IE=edge" http-equiv=X-UA-Compatible><title>UTM CyberX Internal CTF 2024 • gr1d-init</title><link href=/favicon/apple-touch-icon.png rel=apple-touch-icon sizes=180x180><link href=/favicon/favicon-32x32.png rel=icon type=image/png sizes=32x32><link href=/favicon/favicon-16x16.png rel=icon type=image/png sizes=16x16><link href=/favicon/site.webmanifest rel=manifest><link href=/fonts/Satoshi-Variable.ttf rel=preload type=font/ttf as=font crossorigin><link href=/fonts/Satoshi-VariableItalic.ttf rel=preload type=font/ttf as=font crossorigin><link href=https://gr1d-init.github.io/blog/cyberxctf2024 rel=canonical><meta content="UTM CyberX Internal CTF 2024 • gr1d-init" name=title><meta content="Writeups for UTM CyberX Internal CTF 2024" name=description><meta content=gr1d name=author><meta content="" name=theme-color><meta content=article property=og:type><meta content="UTM CyberX Internal CTF 2024" property=og:title><meta content="Writeups for UTM CyberX Internal CTF 2024" property=og:description><meta content=https://gr1d-init.github.io/blog/cyberxctf2024 property=og:url><meta content=gr1d-init property=og:site_name><meta content=en_US property=og:locale><meta content=https://gr1d-init.github.io/_astro/cyberx.B36SDQ5v.png property=og:image><meta content=1200 property=og:image:width><meta content=630 property=og:image:height><meta content=gr1d property=article:author><meta content=2024-12-27T00:00:00.000Z property=article:published_time><meta content=summary_large_image property=twitter:card><meta content=https://gr1d-init.github.io/blog/cyberxctf2024 property=twitter:url><meta content="UTM CyberX Internal CTF 2024" property=twitter:title><meta content="Writeups for UTM CyberX Internal CTF 2024" property=twitter:description><meta content=https://gr1d-init.github.io/_astro/cyberx.B36SDQ5v.png property=twitter:image><link href=/sitemap-index.xml rel=sitemap><link href=https://gr1d-init.github.io/rss.xml rel=alternate type=application/rss+xml title=gr1d-init><meta content="Astro v4.16.16" name=generator><link href=/styles/global.css rel=stylesheet><script>console.log("%c Astro Theme Pure %c https://github.com/cworld1/astro-theme-pure/","color:#fff;background:linear-gradient(90deg,#448bff,#44e9ff);padding:5px 0;","color:#000;background:linear-gradient(90deg,#44e9ff,#ffffff);padding:5px 10px 5px 0px;")</script><script>function simpleSetTheme(){let e=localStorage.getItem("theme");e&&"system"!==e||(e=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),document.documentElement.classList.toggle("dark","dark"===e),document.querySelector('meta[name="theme-color"]')?.setAttribute("content","dark"===e?"#0B0B10":"#FCFCFD")}simpleSetTheme(),document.addEventListener("astro:page-load",(()=>simpleSetTheme()))</script><link href=/_astro/_slug_.BPLKJrng.css rel=stylesheet><link href=/_astro/_slug_.Do1VXCD7.css rel=stylesheet><style>.expand-conetent[data-astro-cid-jvehtkjd]{grid-template-rows:0fr}.expanded[data-astro-cid-jvehtkjd] .expand-conetent[data-astro-cid-jvehtkjd]{grid-template-rows:1fr}.sl-steps{--bullet-size:1.75rem;--bullet-margin:.375rem;list-style:none!important;counter-reset:steps-counter var(--sl-steps-start,0);padding-inline-start:0!important}.sl-steps>li{counter-increment:steps-counter;position:relative;padding-inline-start:calc(var(--bullet-size) + 1rem);padding-bottom:1px;min-height:calc(var(--bullet-size) + var(--bullet-margin))}.sl-steps>li+li{margin-top:0}.sl-steps>li:before{content:counter(steps-counter);position:absolute;top:0;inset-inline-start:0;width:var(--bullet-size);height:var(--bullet-size);line-height:var(--bullet-size);font-size:.8125rem;font-weight:600;text-align:center;color:hsl(var(--foreground) / var(--tw-text-opacity,1));background-color:hsl(var(--primary-foreground) / var(--tw-bg-opacity,1));border-radius:99rem;box-shadow:inset 0 0 0 1px hsl(var(--border) / var(--tw-border-opacity,1))}.sl-steps>li:after{--guide-width:1px;content:"";position:absolute;top:calc(var(--bullet-size) + var(--bullet-margin));bottom:var(--bullet-margin);inset-inline-start:calc((var(--bullet-size) - var(--guide-width))/ 2);width:var(--guide-width);background-color:hsl(var(--border) / var(--tw-border-opacity,1))}.sl-steps>li>:first-child{--lh:1.75em;--shift-y:calc(.5 * (var(--bullet-size) - var(--lh)));margin-top:0;transform:translateY(var(--shift-y));margin-bottom:var(--shift-y);color:hsl(var(--foreground) / var(--tw-text-opacity,1))}.sl-steps>li>:first-child:where(h1,h2,h3,h4,h5,h6){--lh:1.2em}</style><script src=/_astro/hoisted.DSTakipQ.js type=module></script><script src=/_astro/page.V2R8AmkL.js type=module></script></head><body class="flex bg-background justify-center transition-colors"><div class="w-full absolute h-1/2 opacity-25 pointer-events-none start-0 top-0 z-0" style=background-image:linear-gradient(#bababa,transparent)></div><style>:global(.highlight-bg){background-color:var(--highlightColor)!important}</style><main class="flex items-center flex-col leading-relaxed lg:px-10 max-w-[70rem] min-h-screen pb-10 px-4 sm:px-7 text-[0.92rem] w-screen z-10"><header-component class="duration-300 transition-all border-transparent group [&#38;.not-top]:bg-background [&#38;.not-top]:border-border border box-content dark:[&#38;.not-top]:bg-muted mb-16 py-1 rounded-xl sm:rounded-2xl sticky top-4 w-full z-30" data-astro-cid-qlfjksao><header class="flex flex-wrap sm:flex-nowrap sm:justify-start text-sm" data-astro-cid-qlfjksao><nav aria-label=global class="flex items-center justify-between mx-auto relative sm:flex sm:items-center w-full" data-astro-cid-qlfjksao><div class="hidden -left-4 -z-10 absolute box-content dark:max-sm:group-[.expanded]:bg-muted max-sm:group-[.expanded.not-top]:hidden max-sm:group-[.expanded]:block w-[calc(100%+2rem)] !duration-0 -top-8 h-20 max-sm:group-[.expanded]:bg-white" data-astro-cid-qlfjksao></div><a href=/ class="duration-300 transition-all flex-none font-semibold group-[.not-top]:ms-3 sm:group-[.not-top]:ms-5 text-xl" aria-label=Brand data-astro-cid-qlfjksao>gr1d-init</a><div class="flex gap-x-4 sm:gap-x-6" data-astro-cid-qlfjksao><div class="duration-300 transition-all dark:group-[.expanded.not-top]:bg-muted end-0 grid group-[.expanded]:opacity-100 group-[.not-top]:rounded-xl max-md:border-b max-sm:absolute max-sm:group-[.expanded]:bg-background max-sm:group-[.not-top]:border max-sm:group-[.not-top]:pb-2 max-sm:group-[.not-top]:pt-2 max-sm:group-[.not-top]:px-4 max-sm:opacity-0 max-sm:pb-4 max-sm:pt-0 sm:border-0 sm:grid-rows-1 start-0 top-12 z-20" data-astro-cid-qlfjksao id=headerExpandConetent><div class="hidden -left-4 -z-10 absolute box-content dark:max-sm:group-[.expanded]:bg-muted max-sm:group-[.expanded.not-top]:hidden max-sm:group-[.expanded]:block w-[calc(100%+2rem)] bg-white h-full max-md:border-b top-0" data-astro-cid-qlfjksao></div><div class="flex items-center flex-col sm:flex-row gap-x-5 gap-y-2 justify-center overflow-hidden sm:gap-x-7 transition-colors" data-astro-cid-qlfjksao><a href=/blog class="w-full grow sm:w-fit flex-none font-medium hover:text-primary py-2 text-[1.05rem] text-right" aria-label="Nav Menu Item" data-astro-cid-qlfjksao>Blog </a><a href=/projects class="w-full grow sm:w-fit flex-none font-medium hover:text-primary py-2 text-[1.05rem] text-right" aria-label="Nav Menu Item" data-astro-cid-qlfjksao>Projects </a><a href=/about class="w-full grow sm:w-fit flex-none font-medium hover:text-primary py-2 text-[1.05rem] text-right" aria-label="Nav Menu Item" data-astro-cid-qlfjksao>About</a><div class="flex grow flex-row gap-x-3 justify-end sm:gap-x-5 sm:w-fit w-full" data-astro-cid-qlfjksao><a href=/search class="px-1 py-2" data-astro-cid-qlfjksao title=Search><span class=sr-only data-astro-cid-qlfjksao>Search</span> <svg class=size-5 data-astro-cid-qlfjksao><use href=/icons/header.svg#mingcute-search-2-line data-astro-cid-qlfjksao></use></svg></a></div></div></div><div class="flex gap-x-4 group-[.not-top]:gap-x-2 group-[.not-top]:me-1.5 transition-all" data-astro-cid-qlfjksao><button class="transition-colors border hover:bg-border p-1.5 rounded-md sm:group-[.not-top]:rounded-xl box-content group/dark size-5" id=toggleDarkMode data-astro-cid-qlfjksao><span class=sr-only data-astro-cid-qlfjksao>Dark Theme</span> <svg class="transition-colors size-5 group-hover/dark:text-primary system" data-astro-cid-qlfjksao><use href=/icons/header.svg#ph-desktop data-astro-cid-qlfjksao></use></svg> <svg class="transition-colors size-5 group-hover/dark:text-primary hidden light" data-astro-cid-qlfjksao><use href=/icons/header.svg#mingcute-sun-line data-astro-cid-qlfjksao></use></svg> <svg class="transition-colors size-5 group-hover/dark:text-primary hidden dark" data-astro-cid-qlfjksao><use href=/icons/header.svg#mingcute-moon-stars-line data-astro-cid-qlfjksao></use></svg></button> <button class="transition-colors border hover:bg-border p-1.5 rounded-md sm:group-[.not-top]:rounded-xl sm:hidden" id=toggleMenu data-astro-cid-qlfjksao><span class=sr-only data-astro-cid-qlfjksao>Menu</span> <svg class=size-5 data-astro-cid-qlfjksao><use href=/icons/header.svg#mingcute-menu-line data-astro-cid-qlfjksao></use></svg></button></div></div></nav></header></header-component><script>const toggleDarkModeElement=document.getElementById("toggleDarkMode");toggleDarkModeElement&&(toggleDarkModeElement.dataset.theme=localStorage.getItem("theme")||"system")</script><div class=w-full><a href=/blog class="transition-all py-1 border group bg-muted border-border gap-x-1 hover:bg-primary-foreground inline-flex items-center no-underline px-2 rounded-lg text-muted-foreground text-sm" data-astro-prefetch><svg class="group-hover:stroke-primary stroke-muted-foreground" fill=none height=16 stroke-linecap=round stroke-linejoin=round stroke-width=2.5 viewBox="0 0 24 24" width=16 xmlns=http://www.w3.org/2000/svg><line class="duration-300 transition-all ease-in-out group-hover:scale-x-100 scale-x-0 group-hover:translate-x-0 translate-x-3" x1=19 x2=5 y1=12 y2=12></line><polyline class="duration-300 transition-all ease-in-out group-hover:translate-x-0 translate-x-1" points="12 19 5 12 12 5"></polyline></svg><p class=my-0>Back</p></a><div class="w-full gap-x-10 items-start md:flex mt-6"><aside class="animate basis-60 lg:shrink-0 max-md:hidden md:order-2 md:sticky min-w-40 top-24 z-10" id=sidebar><toc-heading><h2 class=font-semibold>TABLE OF CONTENTS</h2><ul class="mt-4 max-h-[70vh] overflow-y-scroll text-card-foreground"><li><div class=relative><span class="duration-300 absolute rounded [&.highlight-bg]:bg-primary [&.readed]:bg-input top-[5%] transition-colors w-[2px]"></span> <a href=#forensics class="transition-all py-1 [&#38;.highlight-bg-translucent]:bg-muted [&#38;.highlight]:font-medium [&#38;.highlight]:text-primary [&#38;.readed]:text-input flex-1 hover:text-foreground line-clamp-2 ms-2 px-3 text-foreground/75" aria-label="Scroll to section: Forensics">Forensics</a></div></li><li><div class=relative><span class="duration-300 absolute rounded [&.highlight-bg]:bg-primary [&.readed]:bg-input top-[5%] transition-colors w-[2px]"></span> <a href=#apocalypse class="transition-all py-1 [&#38;.highlight-bg-translucent]:bg-muted [&#38;.highlight]:font-medium [&#38;.highlight]:text-primary [&#38;.readed]:text-input flex-1 hover:text-foreground line-clamp-2 ms-2 px-3 text-foreground/75" aria-label="Scroll to section: Apocalypse">Apocalypse</a></div><ul><li><div class=relative><span class="duration-300 absolute rounded [&.highlight-bg]:bg-primary [&.readed]:bg-input top-[5%] transition-colors w-[2px]"></span> <a href=#description class="transition-all py-1 [&#38;.highlight-bg-translucent]:bg-muted [&#38;.highlight]:font-medium [&#38;.highlight]:text-primary [&#38;.readed]:text-input flex-1 hover:text-foreground line-clamp-2 ms-2 px-3 text-foreground/75 ps-7" aria-label="Scroll to section: Description">Description</a></div><ul><li><div class=relative><span class="duration-300 absolute rounded [&.highlight-bg]:bg-primary [&.readed]:bg-input top-[5%] transition-colors w-[2px]"></span> <a href=#goals class="transition-all py-1 [&#38;.highlight-bg-translucent]:bg-muted [&#38;.highlight]:font-medium [&#38;.highlight]:text-primary [&#38;.readed]:text-input flex-1 hover:text-foreground line-clamp-2 ms-2 px-3 text-foreground/75 ps-7" aria-label="Scroll to section: Goals">Goals</a></div></li><li><div class=relative><span class="duration-300 absolute rounded [&.highlight-bg]:bg-primary [&.readed]:bg-input top-[5%] transition-colors w-[2px]"></span> <a href=#steps class="transition-all py-1 [&#38;.highlight-bg-translucent]:bg-muted [&#38;.highlight]:font-medium [&#38;.highlight]:text-primary [&#38;.readed]:text-input flex-1 hover:text-foreground line-clamp-2 ms-2 px-3 text-foreground/75 ps-7" aria-label="Scroll to section: Steps">Steps</a></div></li></ul></li></ul></li></ul></toc-heading></aside><article class="min-w-0 grow"><div class=animate id=content-header><div class="relative hero-image mb-6"><img alt="UTM CyberX Internal CTF 2024" decoding=async height=382 loading=eager src=/_astro/cyberx.B36SDQ5v_1gs34J.webp width=988 class="w-full relative cover-image h-auto max-w-[65ch] object-contain rounded-2xl z-10" fetchpriority=high><img alt="UTM CyberX Internal CTF 2024" decoding=async height=382 loading=eager src=/_astro/cyberx.B36SDQ5v_1gs34J.webp width=988 class="duration-300 absolute transition-opacity blur-xl end-0 h-full max-w-[65ch] mt-0 opacity-60 rounded-3xl top-4 z-0" fetchpriority=high id=blurImage></div><div class="animate article-info max-lg:mx-auto"><div class="flex flex-wrap text-muted-foreground gap-x-4 gap-y-2 leading-6 text-xs"><div class="flex items-center gap-1"><svg class=size-5><use href=/icons/ui.svg#mingcute-calendar-2-line></use></svg> <span class="text-muted-foreground font-sans"><time datetime=2024-12-27T00:00:00.000Z>Dec 27, 2024</time></span></div><div class="flex items-center gap-1"><svg class=size-5><use href=/icons/ui.svg#mingcute-time-line></use></svg> 5 min read</div><span class="flex items-center gap-1"><svg class=size-5><use href=/icons/project.svg#mingcute-earth-2-line></use></svg> English</span></div><h1 class="font-medium mt-4 sm:mb-2 sm:mt-6 sm:text-3xl text-2xl">UTM CyberX Internal CTF 2024</h1><div class="flex items-center flex-row flex-wrap gap-x-1 mt-3 sm:mt-5 text-muted-foreground"><svg class=size-5><use href=/icons/ui.svg#mingcute-hashtag-line></use></svg><div><a href=/tags/ctf class="hover:underline hover:underline-offset-4 inline-block" aria-label="View more blogs with the tag ctf" data-pagefind-filter=tag>ctf </a>/</div><div><a href=/tags/forensics class="hover:underline hover:underline-offset-4 inline-block" aria-label="View more blogs with the tag forensics" data-pagefind-filter=tag>forensics</a></div></div><div class="mt-3 italic"><blockquote class="text-muted-foreground text-sm"><q>Writeups for UTM CyberX Internal CTF 2024</q></blockquote></div></div><div class="mt-4 sm:mt-6 border-t max-lg:mx-auto sm:w-1/3 w-1/2"></div></div><div class="animate dark:prose-invert dark:prose-pure max-w-none md:min-w-[45ch] mt-8 prose prose-headings:font-medium prose-pure" id=content><h2 id=forensics>Forensics<a href=#forensics class=anchor>#</a></h2><hr><h2 id=apocalypse>Apocalypse<a href=#apocalypse class=anchor>#</a></h2><p><img alt="" decoding=async height=553 loading=lazy src=/_astro/question.C4n4xyLH_1AvlSD.webp width=483></p><h3 id=description>Description<a href=#description class=anchor>#</a></h3><p>Notorious hacker CyberSteal6969 has struck again, this time targeting CyberX, stealing a highly confidential flag. Our team managed to seize his personal computer, but the system was wiped clean, except for a single, suspicious image left behind.</p><p>Reports suggest CyberSteal6969 may have been communicating with his counterpart using morse code from video. But leave no stone unturned. Can you uncover the secrets within and retrieve the stolen flag?</p><hr><h4 id=goals>Goals<a href=#goals class=anchor>#</a></h4><ol><li>Use pngchecker to check the status of the given image, obtained ERROR:“additional data after IEND chunk”, which is after the cropped image</li><li>Use Acropalypse-Multi-Tool to recover the full image <a href="https://www.youtube.com/watch?v=R866SnJoKQg" target=_blank rel="nofollow, noopener, noreferrer">https://www.youtube.com/watch?v=R866SnJoKQg<span> ↗</span></a></li><li>Login to flickr with the credentials given</li><li>Try to find some useful informations across profile</li><li>Grab the pictures and analyse the metadata</li><li>Use wayback machine to track past version across the sites</li></ol><hr><h4 id=steps>Steps<a href=#steps class=anchor>#</a></h4><ol><li>pngchecker analyse the image<br><img alt="" decoding=async height=100 loading=lazy src=/_astro/pngchecker.Bj8GwY4s_Z1xNjkf.webp width=561></li><li>Use the script to recover the full image</li></ol><div class="astro-code astro-code-themes github-dark github-light" style=background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8;overflow-x:auto data-language=plaintext tabindex=0><pre><code><span class=line><span>import zlib</span></span>
+<span class=line><span>import io</span></span>
+<span class=line><span>import struct</span></span>
+<span class=line><span>import tempfile</span></span>
+<span class=line><span>import os</span></span>
+<span class=line><span></span></span>
+<span class=line><span>class Acropalypse():</span></span>
+<span class=line><span>    def parse_png_chunk(self, stream):</span></span>
+<span class=line><span>        size = int.from_bytes(stream.read(4), "big")</span></span>
+<span class=line><span>        ctype = stream.read(4)</span></span>
+<span class=line><span>        body = stream.read(size)</span></span>
+<span class=line><span>        csum = int.from_bytes(stream.read(4), "big")</span></span>
+<span class=line><span>        assert(zlib.crc32(ctype + body) == csum)</span></span>
+<span class=line><span>        return ctype, body</span></span>
+<span class=line><span></span></span>
+<span class=line><span>    def pack_png_chunk(self, stream, name, body):</span></span>
+<span class=line><span>        stream.write(len(body).to_bytes(4, "big"))</span></span>
+<span class=line><span>        stream.write(name)</span></span>
+<span class=line><span>        stream.write(body)</span></span>
+<span class=line><span>        crc = zlib.crc32(body, zlib.crc32(name))</span></span>
+<span class=line><span>        stream.write(crc.to_bytes(4, "big"))</span></span>
+<span class=line><span>        </span></span>
+<span class=line><span>    def reconstruct_image(self, cropped_image_file, img_width, img_height, rgb_alpha):</span></span>
+<span class=line><span>        PNG_MAGIC = b"\x89PNG\r\n\x1a\n"</span></span>
+<span class=line><span></span></span>
+<span class=line><span>        orig_width = img_width</span></span>
+<span class=line><span>        orig_height = img_height</span></span>
+<span class=line><span></span></span>
+<span class=line><span>        with open(cropped_image_file, "rb") as f_in:</span></span>
+<span class=line><span>            magic = f_in.read(len(PNG_MAGIC))</span></span>
+<span class=line><span>            assert magic == PNG_MAGIC</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            # find end of cropped PNG</span></span>
+<span class=line><span>            while True:</span></span>
+<span class=line><span>                ctype, body = self.parse_png_chunk(f_in)</span></span>
+<span class=line><span>                if ctype == b"IEND":</span></span>
+<span class=line><span>                    break</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            # grab the trailing data</span></span>
+<span class=line><span>            trailer = f_in.read()</span></span>
+<span class=line><span>            </span></span>
+<span class=line><span>            print(f"Found {len(trailer)} trailing bytes!")</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            # find the start of the next idat chunk</span></span>
+<span class=line><span>            try:</span></span>
+<span class=line><span>                next_idat = trailer.index(b"IDAT", 12)</span></span>
+<span class=line><span>            except ValueError:</span></span>
+<span class=line><span>                raise Exception("No trailing IDATs found!")</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            # skip first 12 bytes in case they were part of a chunk boundary</span></span>
+<span class=line><span>            idat = trailer[12:next_idat-8] # last 8 bytes are crc32, next chunk len</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            stream = io.BytesIO(trailer[next_idat-4:])</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            while True:</span></span>
+<span class=line><span>                ctype, body = self.parse_png_chunk(stream)</span></span>
+<span class=line><span>                if ctype == b"IDAT":</span></span>
+<span class=line><span>                    idat += body</span></span>
+<span class=line><span>                elif ctype == b"IEND":</span></span>
+<span class=line><span>                    break</span></span>
+<span class=line><span>                else:</span></span>
+<span class=line><span>                    raise Exception("Unexpected chunk type: " + repr(ctype))</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            idat = idat[:-4] # slice off the adler32</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            print(f"Extracted {len(idat)} bytes of idat!")</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            print("Building bitstream...")</span></span>
+<span class=line><span>            bitstream = []</span></span>
+<span class=line><span>            for byte in idat:</span></span>
+<span class=line><span>                for bit in range(8):</span></span>
+<span class=line><span>                    bitstream.append((byte >> bit) &#x26; 1)</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            # add some padding so we don't lose any bits</span></span>
+<span class=line><span>            for _ in range(7):</span></span>
+<span class=line><span>                bitstream.append(0)</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            print("Reconstructing bit-shifted bytestreams...")</span></span>
+<span class=line><span>            byte_offsets = []</span></span>
+<span class=line><span>            for i in range(8):</span></span>
+<span class=line><span>                shifted_bytestream = []</span></span>
+<span class=line><span>                for j in range(i, len(bitstream)-7, 8):</span></span>
+<span class=line><span>                    val = 0</span></span>
+<span class=line><span>                    for k in range(8):</span></span>
+<span class=line><span>                        val |= bitstream[j+k] &#x3C;&#x3C; k</span></span>
+<span class=line><span>                    shifted_bytestream.append(val)</span></span>
+<span class=line><span>                byte_offsets.append(bytes(shifted_bytestream))</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            # bit wrangling sanity checks</span></span>
+<span class=line><span>            assert(byte_offsets[0] == idat)</span></span>
+<span class=line><span>            assert(byte_offsets[1] != idat)</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            print("Scanning for viable parses...")</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            # prefix the stream with 32k bytes so backrefs can work</span></span>
+<span class=line><span>            prefix_length = 0x8000</span></span>
+<span class=line><span>            prefix = b"\x00" + (prefix_length).to_bytes(2, "little") + (prefix_length ^ 0xffff).to_bytes(2, "little") + b"\x00" * prefix_length</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            for i in range(len(idat)):</span></span>
+<span class=line><span>                truncated = byte_offsets[i%8][i//8:]</span></span>
+<span class=line><span></span></span>
+<span class=line><span>                # only bother looking if it's (maybe) the start of a non-final adaptive huffman coded block</span></span>
+<span class=line><span>                if truncated[0]&#x26;7 != 0b100:</span></span>
+<span class=line><span>                    continue</span></span>
+<span class=line><span></span></span>
+<span class=line><span>                d = zlib.decompressobj(wbits=-15)</span></span>
+<span class=line><span>                try:</span></span>
+<span class=line><span>                    decompressed = d.decompress(prefix+truncated) + d.flush(zlib.Z_FINISH)</span></span>
+<span class=line><span>                    decompressed = decompressed[prefix_length:] # remove leading padding</span></span>
+<span class=line><span>                    if d.eof and d.unused_data in [b"", b"\x00"]: # there might be a null byte if we added too many padding bits</span></span>
+<span class=line><span>                        print(f"Found viable parse at bit offset {i}!")</span></span>
+<span class=line><span>                        # XXX: maybe there could be false positives and we should keep looking?</span></span>
+<span class=line><span>                        break</span></span>
+<span class=line><span>                    else:</span></span>
+<span class=line><span>                        print(f"Parsed until the end of a zlib stream, but there was still {len(d.unused_data)} bytes of remaining data. Skipping.")</span></span>
+<span class=line><span>                except zlib.error as e: # this will happen almost every time</span></span>
+<span class=line><span>                    pass</span></span>
+<span class=line><span>            else:</span></span>
+<span class=line><span>                print("Failed to find viable parse!")</span></span>
+<span class=line><span>                raise Exception("Failed to find viable parse!")</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            print("Generating output PNG...")</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            output_path = os.path.join(tempfile.gettempdir(), 'restored.png')</span></span>
+<span class=line><span>            with open(output_path, "wb") as out:</span></span>
+<span class=line><span>                out.write(PNG_MAGIC)</span></span>
+<span class=line><span></span></span>
+<span class=line><span>                ihdr = b""</span></span>
+<span class=line><span>                ihdr += orig_width.to_bytes(4, "big")</span></span>
+<span class=line><span>                ihdr += orig_height.to_bytes(4, "big")</span></span>
+<span class=line><span>                ihdr += (8).to_bytes(1, "big") # bitdepth</span></span>
+<span class=line><span>                if rgb_alpha:</span></span>
+<span class=line><span>                    ihdr += (6).to_bytes(1, "big") # true colour with alpha</span></span>
+<span class=line><span>                else:</span></span>
+<span class=line><span>                    ihdr += (2).to_bytes(1, "big") # true colour</span></span>
+<span class=line><span>                ihdr += (0).to_bytes(1, "big") # compression method</span></span>
+<span class=line><span>                ihdr += (0).to_bytes(1, "big") # filter method</span></span>
+<span class=line><span>                ihdr += (0).to_bytes(1, "big") # interlace method</span></span>
+<span class=line><span></span></span>
+<span class=line><span>                self.pack_png_chunk(out, b"IHDR", ihdr)</span></span>
+<span class=line><span></span></span>
+<span class=line><span>                # fill missing data with solid magenta</span></span>
+<span class=line><span>                if rgb_alpha:</span></span>
+<span class=line><span>                    reconstructed_idat = bytearray((b"\x00" + b"\xff\x00\xff\xff" * orig_width) * orig_height)</span></span>
+<span class=line><span>                else:</span></span>
+<span class=line><span>                    reconstructed_idat = bytearray((b"\x00" + b"\xff\x00\xff" * orig_width) * orig_height)</span></span>
+<span class=line><span></span></span>
+<span class=line><span>                # paste in the data we decompressed</span></span>
+<span class=line><span>                reconstructed_idat[-len(decompressed):] = decompressed</span></span>
+<span class=line><span></span></span>
+<span class=line><span>                self.pack_png_chunk(out, b"IDAT", zlib.compress(reconstructed_idat))</span></span>
+<span class=line><span>                self.pack_png_chunk(out, b"IEND", b"")</span></span>
+<span class=line><span></span></span>
+<span class=line><span>            print("Done!")</span></span>
+<span class=line><span>            return output_path</span></span>
+<span class=line><span></span></span>
+<span class=line><span># Create an instance of the Acropalypse class</span></span>
+<span class=line><span>acropalypse = Acropalypse()</span></span>
+<span class=line><span></span></span>
+<span class=line><span># Reconstruct the image using the correct resolution of 1920x1080</span></span>
+<span class=line><span>output_image_path = acropalypse.reconstruct_image('cm.png', 1920, 1080, True) // change to your input image file name</span></span>
+<span class=line><span></span></span>
+<span class=line><span></span></span></code></pre><span class="duration-300 absolute transition-opacity right-3 text-muted-foreground top-3 language select-none text-sm">plaintext</span><button class="duration-300 absolute rounded bg-primary-foreground border border-border box-content copy opacity-0 p-1 right-3 text-muted-foreground top-3 transition-opacity" data-code="import zlib
+import io
+import struct
+import tempfile
+import os
+
+class Acropalypse():
+    def parse_png_chunk(self, stream):
+        size = int.from_bytes(stream.read(4), &#x22;big&#x22;)
+        ctype = stream.read(4)
+        body = stream.read(size)
+        csum = int.from_bytes(stream.read(4), &#x22;big&#x22;)
+        assert(zlib.crc32(ctype + body) == csum)
+        return ctype, body
+
+    def pack_png_chunk(self, stream, name, body):
+        stream.write(len(body).to_bytes(4, &#x22;big&#x22;))
+        stream.write(name)
+        stream.write(body)
+        crc = zlib.crc32(body, zlib.crc32(name))
+        stream.write(crc.to_bytes(4, &#x22;big&#x22;))
+        
+    def reconstruct_image(self, cropped_image_file, img_width, img_height, rgb_alpha):
+        PNG_MAGIC = b&#x22;\x89PNG\r\n\x1a\n&#x22;
+
+        orig_width = img_width
+        orig_height = img_height
+
+        with open(cropped_image_file, &#x22;rb&#x22;) as f_in:
+            magic = f_in.read(len(PNG_MAGIC))
+            assert magic == PNG_MAGIC
+
+            # find end of cropped PNG
+            while True:
+                ctype, body = self.parse_png_chunk(f_in)
+                if ctype == b&#x22;IEND&#x22;:
+                    break
+
+            # grab the trailing data
+            trailer = f_in.read()
+            
+            print(f&#x22;Found {len(trailer)} trailing bytes!&#x22;)
+
+            # find the start of the next idat chunk
+            try:
+                next_idat = trailer.index(b&#x22;IDAT&#x22;, 12)
+            except ValueError:
+                raise Exception(&#x22;No trailing IDATs found!&#x22;)
+
+            # skip first 12 bytes in case they were part of a chunk boundary
+            idat = trailer[12:next_idat-8] # last 8 bytes are crc32, next chunk len
+
+            stream = io.BytesIO(trailer[next_idat-4:])
+
+            while True:
+                ctype, body = self.parse_png_chunk(stream)
+                if ctype == b&#x22;IDAT&#x22;:
+                    idat += body
+                elif ctype == b&#x22;IEND&#x22;:
+                    break
+                else:
+                    raise Exception(&#x22;Unexpected chunk type: &#x22; + repr(ctype))
+
+            idat = idat[:-4] # slice off the adler32
+
+            print(f&#x22;Extracted {len(idat)} bytes of idat!&#x22;)
+
+            print(&#x22;Building bitstream...&#x22;)
+            bitstream = []
+            for byte in idat:
+                for bit in range(8):
+                    bitstream.append((byte >> bit) &#x26; 1)
+
+            # add some padding so we don&#x27;t lose any bits
+            for _ in range(7):
+                bitstream.append(0)
+
+            print(&#x22;Reconstructing bit-shifted bytestreams...&#x22;)
+            byte_offsets = []
+            for i in range(8):
+                shifted_bytestream = []
+                for j in range(i, len(bitstream)-7, 8):
+                    val = 0
+                    for k in range(8):
+                        val |= bitstream[j+k] << k
+                    shifted_bytestream.append(val)
+                byte_offsets.append(bytes(shifted_bytestream))
+
+            # bit wrangling sanity checks
+            assert(byte_offsets[0] == idat)
+            assert(byte_offsets[1] != idat)
+
+            print(&#x22;Scanning for viable parses...&#x22;)
+
+            # prefix the stream with 32k bytes so backrefs can work
+            prefix_length = 0x8000
+            prefix = b&#x22;\x00&#x22; + (prefix_length).to_bytes(2, &#x22;little&#x22;) + (prefix_length ^ 0xffff).to_bytes(2, &#x22;little&#x22;) + b&#x22;\x00&#x22; * prefix_length
+
+            for i in range(len(idat)):
+                truncated = byte_offsets[i%8][i//8:]
+
+                # only bother looking if it&#x27;s (maybe) the start of a non-final adaptive huffman coded block
+                if truncated[0]&#x26;7 != 0b100:
+                    continue
+
+                d = zlib.decompressobj(wbits=-15)
+                try:
+                    decompressed = d.decompress(prefix+truncated) + d.flush(zlib.Z_FINISH)
+                    decompressed = decompressed[prefix_length:] # remove leading padding
+                    if d.eof and d.unused_data in [b&#x22;&#x22;, b&#x22;\x00&#x22;]: # there might be a null byte if we added too many padding bits
+                        print(f&#x22;Found viable parse at bit offset {i}!&#x22;)
+                        # XXX: maybe there could be false positives and we should keep looking?
+                        break
+                    else:
+                        print(f&#x22;Parsed until the end of a zlib stream, but there was still {len(d.unused_data)} bytes of remaining data. Skipping.&#x22;)
+                except zlib.error as e: # this will happen almost every time
+                    pass
+            else:
+                print(&#x22;Failed to find viable parse!&#x22;)
+                raise Exception(&#x22;Failed to find viable parse!&#x22;)
+
+            print(&#x22;Generating output PNG...&#x22;)
+
+            output_path = os.path.join(tempfile.gettempdir(), &#x27;restored.png&#x27;)
+            with open(output_path, &#x22;wb&#x22;) as out:
+                out.write(PNG_MAGIC)
+
+                ihdr = b&#x22;&#x22;
+                ihdr += orig_width.to_bytes(4, &#x22;big&#x22;)
+                ihdr += orig_height.to_bytes(4, &#x22;big&#x22;)
+                ihdr += (8).to_bytes(1, &#x22;big&#x22;) # bitdepth
+                if rgb_alpha:
+                    ihdr += (6).to_bytes(1, &#x22;big&#x22;) # true colour with alpha
+                else:
+                    ihdr += (2).to_bytes(1, &#x22;big&#x22;) # true colour
+                ihdr += (0).to_bytes(1, &#x22;big&#x22;) # compression method
+                ihdr += (0).to_bytes(1, &#x22;big&#x22;) # filter method
+                ihdr += (0).to_bytes(1, &#x22;big&#x22;) # interlace method
+
+                self.pack_png_chunk(out, b&#x22;IHDR&#x22;, ihdr)
+
+                # fill missing data with solid magenta
+                if rgb_alpha:
+                    reconstructed_idat = bytearray((b&#x22;\x00&#x22; + b&#x22;\xff\x00\xff\xff&#x22; * orig_width) * orig_height)
+                else:
+                    reconstructed_idat = bytearray((b&#x22;\x00&#x22; + b&#x22;\xff\x00\xff&#x22; * orig_width) * orig_height)
+
+                # paste in the data we decompressed
+                reconstructed_idat[-len(decompressed):] = decompressed
+
+                self.pack_png_chunk(out, b&#x22;IDAT&#x22;, zlib.compress(reconstructed_idat))
+                self.pack_png_chunk(out, b&#x22;IEND&#x22;, b&#x22;&#x22;)
+
+            print(&#x22;Done!&#x22;)
+            return output_path
+
+# Create an instance of the Acropalypse class
+acropalypse = Acropalypse()
+
+# Reconstruct the image using the correct resolution of 1920x1080
+output_image_path = acropalypse.reconstruct_image(&#x27;cm.png&#x27;, 1920, 1080, True) // change to your input image file name
+
+" onclick="navigator.clipboard.writeText(this.dataset.code);
+          this.classList.add(&#x27;copied&#x27;);
+          setTimeout(() => this.classList.remove(&#x27;copied&#x27;), 2000)"><div class=ready><svg class=size-5><use href=/icons/code.svg#mingcute-clipboard-line></use></svg></div><div class="hidden success"><svg class=size-5><use href=/icons/code.svg#mingcute-file-check-line></use></svg></div></button></div><p>References: <a href="https://youtu.be/R866SnJoKQg?si=rby5gJoYa2s9zR4N" target=_blank rel="nofollow, noopener, noreferrer">https://youtu.be/R866SnJoKQg?si=rby5gJoYa2s9zR4N<span> ↗</span></a></p><ol start=3><li>Retrieve the recovered full image from the specified output directory: /tmp folder <img alt="" decoding=async height=1080 loading=lazy src=/_astro/restored.D8Nqn219_BhaT1.webp width=1920></li><li>Login to flickr with the credentials obtained from the recovered image</li></ol><div class="astro-code astro-code-themes github-dark github-light" style=background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8;overflow-x:auto data-language=plaintext tabindex=0><pre><code><span class=line><span>cybersteal6969@gmail.com</span></span>
+<span class=line><span>sh8UPt-S"Cp-6i+</span></span>
+<span class=line><span></span></span></code></pre><span class="duration-300 absolute transition-opacity right-3 text-muted-foreground top-3 language select-none text-sm">plaintext</span><button class="duration-300 absolute rounded bg-primary-foreground border border-border box-content copy opacity-0 p-1 right-3 text-muted-foreground top-3 transition-opacity" data-code="cybersteal6969@gmail.com
+sh8UPt-S&#x22;Cp-6i+
+" onclick="navigator.clipboard.writeText(this.dataset.code);
+          this.classList.add(&#x27;copied&#x27;);
+          setTimeout(() => this.classList.remove(&#x27;copied&#x27;), 2000)"><div class=ready><svg class=size-5><use href=/icons/code.svg#mingcute-clipboard-line></use></svg></div><div class="hidden success"><svg class=size-5><use href=/icons/code.svg#mingcute-file-check-line></use></svg></div></button></div><p><img alt="" decoding=async height=472 loading=lazy src=/_astro/login.C8rI4CJP_Z2pUobN.webp width=378><br>5. Browse through cybersteal6969’s profile, we found two videos, flag1 and flag2<br><img alt="" decoding=async height=823 loading=lazy src=/_astro/cyberstealprofiile.Ci2fFgDc_19weuK.webp width=1561><br>6. From the video, we analyse the morse code, given “NO FLAG FOR YOU TRY SOMETHING ELSE” Morse Code Analyser: <a href=https://morsecode.world/international/decoder/audio-decoder-adaptive.html target=_blank rel="nofollow, noopener, noreferrer">https://morsecode.world/international/decoder/audio-decoder-adaptive.html<span> ↗</span></a> 7. From the videos, we know that, it was posted by info stealer6969, shared to cybersteal6969, two of them are communicating<br><img alt="" decoding=async height=981 loading=lazy src=/_astro/infostealerposted.Bw6rEp4w_156IcI.webp width=1920><br>8. Enter info stealer6969 profile, we found another video, named flag, analyse the morse code, we get “GOODJOBG3TT1NGH3R3”, this is the first decoy flag<br><img alt="" decoding=async height=653 loading=lazy src=/_astro/infostealervid.DXNwlSn0_ZtBvbG.webp width=670><br>9. Keep browsing, we found that info stealer6969 uploaded bunch of pictures<br><img alt="" decoding=async height=766 loading=lazy src=/_astro/infopic.BM0iuDxh_21dxf8.webp width=1548><br>10. These pictures containing secret info in their metadata 11. Using exiftool, we found that cat.jpg directs us to <a href=https://cyberxstupid.blogspot.com/2024/12/blog-post.html target=_blank rel="nofollow, noopener, noreferrer">https://cyberxstupid.blogspot.com/2024/12/blog-post.html<span> ↗</span></a>, shown at comment section<br><img alt="" decoding=async height=432 loading=lazy src=/_astro/cat.BAUEqhp1_Zs5cIe.webp width=768><br><img alt="" decoding=async height=420 loading=lazy src=/_astro/exifcat.DhzIJ5PR_1H0x1d.webp width=733><br>12. Randomly clicking through the site, we found the second decoy flag CyberX{c4t_m0us3_g4m3_34sy}<br><img alt="" decoding=async height=551 loading=lazy src=/_astro/first.D42fyZ31_ZdQxN6.webp width=953><br>13. Here we need to use Wayback Mahcine, archive.org, to track the past version of the site.<br><img alt="" decoding=async height=505 loading=lazy src=/_astro/wayback.CMN4U3K5_Z1Ypaov.webp width=951><br>14. Under the same link but in past version, we obtain the final flag CyberX{c4t_m0us3_pl4y_m4d3_34s13r}<br><img alt="" decoding=async height=726 loading=lazy src=/_astro/waybackflag.C94webAU_1n6iC8.webp width=959></p></div></article></div><div class="w-full gap-x-10 items-start md:flex mt-8"><div class="text-muted-foreground flex-1 md:min-w-[50ch] mt-8"><div class="flex flex-col gap-y-2 border px-3 py-2 relative rounded-xl sm:px-4 sm:py-3"><svg class="opacity-10 absolute end-4 size-20 top-4"><use href=/icons/copyright-sponsor.svg#mingcute-copyright-line></use></svg><div class="flex flex-col"><div class="font-medium text-foreground">UTM CyberX Internal CTF 2024</div><div class=text-sm>https://gr1d-init.github.io/blog/cyberxctf2024</div></div><div class="flex flex-wrap flex-row gap-x-5 gap-y-1 justify-start sm:gap-x-8"><div class="flex gap-x-2 sm:flex-col"><span>Author</span> <span class="text-sm max-sm:place-self-center text-foreground">gr1d</span></div><div class="flex gap-x-2 sm:flex-col sm:min-w-16"><span>Published at</span> <span class="text-sm max-sm:place-self-center text-foreground">December 27, 2024</span></div><div class="flex gap-x-2 sm:flex-col"><span>Copyright</span> <a href=https://creativecommons.org/licenses/by/4.0/ class="text-sm max-sm:place-self-center text-foreground" target=_blank>CC BY-NC-SA 4.0</a></div></div></div><div class="mt-3 gap-2 grid grid-cols-1 sm:gap-4 sm:grid-cols-2 sm:mt-6"><div><a href=/blog/eqctf2025 class="flex items-center border-transparent duration-300 group border gap-3 hover:bg-muted no-underline px-4 py-2 rounded-lg sm:py-4 transition-colors"><svg class="transition-colors group-hover:stroke-primary stroke-muted-foreground rotate-180" fill=none height=20 stroke-linecap=round stroke-linejoin=round stroke-width=2.5 viewBox="0 0 24 24" width=20 xmlns=http://www.w3.org/2000/svg><line class="duration-300 transition-all ease-in-out group-hover:translate-x-1 group-hover:scale-x-100 scale-x-0 translate-x-4" x1=5 x2=19 y1=12 y2=12></line><polyline class="duration-300 transition-all ease-in-out group-hover:translate-x-1 translate-x-0" points="12 5 19 12 12 19"></polyline></svg><div class="flex flex-col gap-0.5 grow max-w-[80%] sm:gap-1.5"><div class="text-muted-foreground text-sm font-normal uppercase">Prev</div><div class="transition-colors font-medium truncate whitespace-nowrap">EQCTF 2025</div></div></a></div><div><a href=/blog/customize class="flex items-center border-transparent duration-300 group border gap-3 hover:bg-muted no-underline px-4 py-2 rounded-lg sm:py-4 transition-colors justify-end text-right"><div class="flex flex-col gap-0.5 grow max-w-[80%] sm:gap-1.5"><div class="text-muted-foreground text-sm font-normal uppercase">Next</div><div class="transition-colors font-medium truncate whitespace-nowrap">Personalized Customization Guide</div></div><svg class="transition-colors group-hover:stroke-primary stroke-muted-foreground" fill=none height=20 stroke-linecap=round stroke-linejoin=round stroke-width=2.5 viewBox="0 0 24 24" width=20 xmlns=http://www.w3.org/2000/svg><line class="duration-300 transition-all ease-in-out group-hover:translate-x-1 group-hover:scale-x-100 scale-x-0 translate-x-4" x1=5 x2=19 y1=12 y2=12></line><polyline class="duration-300 transition-all ease-in-out group-hover:translate-x-1 translate-x-0" points="12 5 19 12 12 19"></polyline></svg></a></div></div><br></div><div class="basis-60 min-w-40"></div></div><button class="flex items-center border-transparent duration-300 group bg-muted border-2 bottom-8 data-[show=true]:opacity-100 data-[show=true]:translate-y-0 end-4 fixed h-10 hover:border-border/75 justify-center opacity-0 rounded-full sm:end-8 sm:h-12 sm:w-12 text-muted-foreground transition-all translate-y-28 w-10 z-90" id=to-top-btn aria-label="Back to Top" data-show=false><div class="flex items-center justify-center absolute bottom-0 end-0 group-[.ended]:opacity-0 group-hover:opacity-0 start-0 top-0 transition-opacity"><span class=text>10</span> <span class=text-xs>%</span></div><svg class="size-6 group-[.ended]:opacity-100 group-hover:opacity-100 opacity-0 transition-opacity"><use href=/icons/ui.svg#mingcute-up-line></use></svg></button><script>!function(){const e="content-header",t=document.getElementById("to-top-btn"),n=t.children[0].children[0],o=document.getElementById(e),c=document.getElementById("content");if(t.addEventListener("click",(()=>{document.documentElement.scrollTo({behavior:"smooth",top:0})})),o){new IntersectionObserver((function(e){e.forEach((e=>{t.dataset.show=(!e.isIntersecting).toString()}))})).observe(o)}else console.error(`Element with ID ${e} not found.`);{const e=c.scrollHeight,o=c.offsetTop,d=document.documentElement.clientHeight;document.addEventListener("scroll",(()=>{const c=function(){const t=document.documentElement.scrollTop||document.body.scrollTop;if(!(t<o))return Math.round((t-o)/(e-d)*100)}();void 0!==c&&(n.innerText=c.toString(),t.classList.toggle("ended",c>100))}))}}()</script></div><footer class="w-full mx-auto mt-24"><div class="border-t border-border pt-5"><div class="flex items-center flex-col sm:flex-row gap-y-3 sm:flex sm:gap-y-0 sm:items-center sm:justify-between"><div class="flex items-center flex-col sm:flex-row gap-2 sm:gap-x-4 text-sm"><div class="text-muted-foreground [&_a:hover]:text-primary [&_a]:text-foreground">© 2025 gr1d | Licensed under Apache-2.0</div></div><div class="flex items-center justify-between"><div class="flex items-center gap-x-4"><a href=mailto:gr1d_init@proton.me class="transition-all text-muted-foreground hover:text-muted-foreground/75 inline-block" aria-label=mail rel="noopener noreferrer" target=_blank><svg class=size-6><use href=/icons/social.svg#mingcute-mail-line></use></svg> </a><a href=https://github.com/gr1d-init class="transition-all text-muted-foreground hover:text-muted-foreground/75 inline-block" aria-label=github rel="noopener noreferrer" target=_blank><svg class=size-6><use href=/icons/social.svg#mingcute-github-line></use></svg> </a><a href=https://www.linkedin.com/in/qs220a class="transition-all text-muted-foreground hover:text-muted-foreground/75 inline-block" aria-label=linkedin rel="noopener noreferrer" target=_blank><svg class=size-6><use href=/icons/social.svg#mingcute-linkedin-line></use></svg> </a><a href=/rss.xml class="transition-all text-muted-foreground hover:text-muted-foreground/75 inline-block" aria-label=rss rel="noopener noreferrer" target=_blank><svg class=size-6><use href=/icons/social.svg#mingcute-rss-2-line></use></svg></a></div></div></div></div></footer></main></body></html>
