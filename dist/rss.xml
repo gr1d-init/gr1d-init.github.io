@@ -1,4 +1,572 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>Personalized Customization Guide</title><link>https://gr1d-init.github.io/blog/customize</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/customize</guid><description>astro-theme-pure Personalized Customization Guide</description><pubDate>Sat, 27 Jul 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Site Configuration&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>EQCTF 2025</title><link>https://gr1d-init.github.io/blog/eqctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/eqctf2025</guid><description>Writeups for Equilibrium Solo CTF 2025</description><pubDate>Sat, 25 Jan 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Reverse Engineering&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h2&gt;Baka Mitai&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.CsKevD8e_Z178FvC.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Check file information using checksec&lt;/li&gt;
+&lt;li&gt;Decompilation using ghidra, check the flagchecker flow&lt;/li&gt;
+&lt;li&gt;Deploy angr script, perform symbolic analysis
+&lt;em&gt;References:&lt;/em&gt;
+https://shinmao.github.io/posts/2022/02/bp1/
+https://github.com/jakespringer/angr_ctf&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li&gt;Using checksec, we realised the file is dynamcally linked, stripped
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/fileinfo.M0rQw6qx_pkQ2q.webp&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;li&gt;Decompile with ghidra, since it&apos;s stripped, we have to find the main entry from entry function
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/entryFunction.CWV-0_iT_ZRD18R.webp&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;li&gt;Try to rename the variables, functions, for ease of analysis
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/renamed.DrgXV0fX_Z13S5Iy.webp&quot; alt=&quot;&quot;&gt;
+From this point, we could know that:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;The program proceed if flag length == 0x37 (55 characters),&lt;/li&gt;
+&lt;li&gt;It go through complex transformation, lastly doing flagcheck and tell if the flag provide from user input is correct&lt;/li&gt;
+&lt;li&gt;Well, we are not going to reverse and go through these complex transformations.&lt;/li&gt;
+&lt;li&gt;Instead, we will deploy angr script, automate this process&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;I deployed the angr script on google colab
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/googleColab._N2KWjEW_Z1HlLUY.webp&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;!pip install angr
+
+import angr
+import claripy
+  
+# Define binary path and parameters
+input_file_path = &apos;./chall&apos;
+flag_length = 55
+known_string = &apos;EQCTF{&apos;
+FIND_ADDR = 0x4016e4
+AVOID_ADDR = [0x4016fa, 0x40159f]
+START_ADDR = 0x40158d
+
+# Load the binary
+proj = angr.Project(input_file_path, auto_load_libs=False, main_opts={&apos;base_addr&apos;: 0x400000})
+  
+# Create symbolic characters for the flag
+known_chars = [claripy.BVV((known_string[i])) for i in range(len(known_string))]
+flag_chars = [claripy.BVS(f&quot;flag_{i}&quot;, 8) for i in range(flag_length - len(known_string))]
+flag = claripy.Concat(*known_chars + flag_chars)
+
+# Create a blank state at the start address
+state = proj.factory.blank_state(addr=START_ADDR)
+state.options.add(angr.options.LAZY_SOLVES)
+state.options.add(angr.options.UNICORN)
+  
+# Define the address of the local variable `local_58` (e.g., `[RBP - 0x50]`)
+# Assume RBP is initialized to some stack base (common for blank_state)
+stack_base = state.regs.rbp
+local_58_address = stack_base - 0x50  # Offset to local variable `local_58`
+  
+# Store the symbolic flag into `local_58`
+state.memory.store(local_58_address, flag)
+
+# Pass the address of `local_58` in RDI (used by __isoc23_scanf)
+state.regs.rdi = local_58_address
+
+# Add constraints to ensure flag is printable (ASCII range 0x20 to 0x7e)
+for k in flag_chars:
+    state.solver.add(k &amp;#x3C; 0x7f)  # Less than 0x7f (127)
+    state.solver.add(k &gt; 0x20)  # Greater than 0x20 (32)
+
+# Create a simulation manager
+sim_manager = proj.factory.simulation_manager(state)
+
+# Explore paths to find the target address while avoiding bad paths
+sim_manager.explore(find=FIND_ADDR, avoid=AVOID_ADDR)
+
+# Check if a solution was found
+if len(sim_manager.found) &gt; 0:
+    # Evaluate the symbolic flag to retrieve its value
+    solution = sim_manager.found[0].solver.eval(flag, cast_to=bytes)
+    print(f&quot;Flag found: {solution.decode()}&quot;)
+else:
+    print(&quot;No solution found.&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To understand how this script works in details, do check out the references provided, and follow the tutorials.
+The scripting is hard, it just follow a strict template.
+However, there are few points worth mentioning,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the start_addr, should be placed after scanf CALL instruction, better if placed at where complex transformation start&lt;/li&gt;
+&lt;li&gt;symbolic stack approach is an important point, specifically for this challenge where you can&apos;t just use a universal angr template&lt;/li&gt;
+&lt;li&gt;blank_state should be used instead of entry_state because strlen is called before scanf, if you define the sim manager with entry state, it will waste extra resources going through strlen library call. Within all libc library call, there are mutex locks which angr cant deal with, which is why you need to hook the function and simulate user input with symbolic memory&lt;/li&gt;
+&lt;li&gt;find_addr, is the desired memory location where the instance of &quot;Correct&quot; is reached&lt;/li&gt;
+&lt;li&gt;avoid_addr are the memory location to avoid such as &quot;Wrong&quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/finalResult.qhUeuRYg_Z2Hu15.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;Cryptic Token Diffusion&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.C2dTRo4D_1ONksG.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Perform binary diffing&lt;/li&gt;
+&lt;li&gt;Match index number to correspond characters&lt;/li&gt;
+&lt;li&gt;Rearrange the character in ascending order according to their index number
+&lt;em&gt;Tools required: vbindiff&lt;/em&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li&gt;Viewing the files, there are two versions of application. Thus, we try to compare the difference between versions.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/files.7fkW2lfk_Z241GSH.webp&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;vbindiff vault-v1.0.0.elf vault-1.2.1.elf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Observe the pattern, we realised that there are two parts showing difference in binaries:
+&lt;ul&gt;
+&lt;li&gt;vault-v1.0.0 acts as the index number, corresponds to the characters in vault-v1.2.1
+&lt;em&gt;Part 1&lt;/em&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/diff1.C2R5bIcs_ZFU6kz.webp&quot; alt=&quot;&quot;&gt;
+&lt;em&gt;Part 2&lt;/em&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/diff2.DWSPMhxC_Z3AhYj.webp&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;List out all the correspondence, sort them in ascending order, turn to ASCII and print it out&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;v1p1 = [12, 28, 0, 23, 15, 21, 10, 4, 27, 5, 26, 8, 17, 3, 18, 25]
+v1p2 = [9, 13, 7, 24, 6, 2, 1, 11, 14, 22, 29, 16, 19, 20]
+
+v2p1 = [0x37, 0x67, 0x45, 0x31, 0x62, 0x5f, 0x30, 0x46, 0x6e, 0x7b, 0x31, 0x74, 0x6e, 0x54, 0x34, 0x66]
+v2p2 = [0x72, 0x30, 0x6E, 0x66, 0x31, 0x43, 0x51, 0x5F, 0x5F, 0x64, 0x7D, 0x31, 0x72, 0x79]
+
+v1 = v1p1 + v1p2
+v2 = v2p1 + v2p2
+
+pairs = sorted(zip(v1, v2))
+
+sorted_ascii = &apos;&apos;.join(chr(value) for _, value in pairs)
+
+print(sorted_ascii)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/solution.B9WEySsu_1aAU3h.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;Gen Z&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.X0swvYMg_1pBuki.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Deobfuscate the C code, you may choose not to as it just work&lt;/li&gt;
+&lt;li&gt;Observe the log, figure out how the flag might relate to the timestamp&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li&gt;Opening the file, you will see obfuscated C code&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;#define rn ;
+#define finna =
+#define cap !=
+#define mf *
+#define bouta &amp;#x26;
+#define ongod ++
+#define sheesh &amp;#x3C;
+#define fr &amp;#x3C;&amp;#x3C;
+#define bet if
+#define chief main
+#define yikes break
+#define deadass return
+#define skibidi {
+#define tho }
+#define bussin cout
+#define huh true
+#define lit double
+
+#include &amp;#x3C;iostream&gt;
+#include &amp;#x3C;fstream&gt;
+#include &amp;#x3C;iomanip&gt;
+#include &amp;#x3C;openssl/sha.h&gt;
+
+
+using namespace std rn
+
+unsigned int seed() skibidi
+    deadass static_cast&amp;#x3C;unsigned int&gt;(time(nullptr)) rn
+tho
+
+string getHash(lit value) skibidi
+    ostringstream oss rn
+    oss fr setprecision(17) fr value rn
+    string text finna oss.str() rn
+    unsigned char hash[SHA256_DIGEST_LENGTH] rn
+    SHA256(reinterpret_cast&amp;#x3C;const unsigned char mf&gt;(text.c_str()), text.size(), hash) rn
+    ostringstream result rn
+    for (int i finna 0 rn i sheesh SHA256_DIGEST_LENGTH rn i ongod) {
+        result fr hex fr setw(2) fr setfill(&apos;0&apos;) fr static_cast&amp;#x3C;int&gt;(hash[i]) rn
+    tho
+    deadass result.str() rn
+tho
+
+
+int chief() skibidi
+    while (huh) skibidi
+        unsigned int s finna seed() rn
+        srand(s) rn
+        int x finna rand() rn
+
+        string flag finna getHash(x) rn
+
+        bet (flag.find(&quot;a9ba358e&quot;) cap string::npos) {  
+            ofstream outfile(&quot;./flag&quot;) rn
+            bet (outfile.is_open()) {
+                outfile fr &quot;EQCTF{&quot; fr flag fr &quot;tho&quot; rn
+                outfile.close() rn
+            tho
+            yikes rn
+        tho
+  
+        time_t now finna time(0) rn
+        tm mf ltm finna localtime(bouta now) rn
+
+
+        bussin fr &quot;[&quot; fr 1900 + ltm-&gt;tm_year fr &quot;-&quot; rn
+        bussin fr 1 + ltm-&gt;tm_mon fr &quot;-&quot; rn
+        bussin fr ltm-&gt;tm_mday fr &quot;] &quot; rn
+        bussin fr &quot;🤓☝️ erm actually, you&apos;re incorrect 🥺👉👈: &quot; fr x fr endl rn
+    tho
+    bussin fr &quot;Good job Skibidisigma 🐺🥶 - Adolf Rizzler 🗿&quot; fr endl rn
+
+    deadass 0 rn
+tho
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Just replace the obfuscated part with its actual symbol as shown in define list, to ease our debugging process.&lt;/p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;After debobfuscation,&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;#include &amp;#x3C;iostream&gt;
+#include &amp;#x3C;fstream&gt;
+#include &amp;#x3C;iomanip&gt;
+#include &amp;#x3C;openssl/sha.h&gt;
+  
+using namespace std;
+  
+unsigned int seed()
+{
+    return static_cast&amp;#x3C;unsigned int&gt;(time(nullptr));
+}
+
+string getHash(double value)
+{
+    ostringstream oss;
+    oss &amp;#x3C;&amp;#x3C; setprecision(17) &amp;#x3C;&amp;#x3C; value;
+    string text = oss.str();
+  
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256(reinterpret_cast&amp;#x3C;const unsigned char *&gt;(text.c_str()), text.size(), hash);
+
+    ostringstream result;
+    for (int i = 0; i &amp;#x3C; SHA256_DIGEST_LENGTH; i++)
+    {
+        result &amp;#x3C;&amp;#x3C; hex &amp;#x3C;&amp;#x3C; setw(2) &amp;#x3C;&amp;#x3C; setfill(&apos;0&apos;) &amp;#x3C;&amp;#x3C; static_cast&amp;#x3C;int&gt;(hash[i]);
+    }
+    return result.str();
+}
+
+
+int main()
+{
+    while (true)
+    {
+        unsigned int s = seed();
+        srand(s);
+        int x = rand();
+
+        string flag = getHash(x);
+
+        if (flag.find(&quot;a9ba358e&quot;) != string::npos)
+        {
+            ofstream outfile(&quot;./flag&quot;);
+            if (outfile.is_open())
+            {
+                outfile &amp;#x3C;&amp;#x3C; &quot;EQCTF{&quot; &amp;#x3C;&amp;#x3C; flag &amp;#x3C;&amp;#x3C; &quot;}&quot;;
+                outfile.close();
+            }
+            break;
+        }
+
+        time_t now = time(0);
+        tm *ltm = localtime(&amp;#x26;now);
+  
+        cout &amp;#x3C;&amp;#x3C; &quot;[&quot; &amp;#x3C;&amp;#x3C; 1900 + ltm-&gt;tm_year &amp;#x3C;&amp;#x3C; &quot;-&quot;;
+        cout &amp;#x3C;&amp;#x3C; 1 + ltm-&gt;tm_mon &amp;#x3C;&amp;#x3C; &quot;-&quot;;
+        cout &amp;#x3C;&amp;#x3C; ltm-&gt;tm_mday &amp;#x3C;&amp;#x3C; &quot;] &quot;;
+        cout &amp;#x3C;&amp;#x3C; &quot;🤓☝️ erm actually, you&apos;re incorrect 🥺👉👈: &quot; &amp;#x3C;&amp;#x3C; x &amp;#x3C;&amp;#x3C; endl;
+    }
+    cout &amp;#x3C;&amp;#x3C; &quot;Good job Skibidisigma 🐺🥶 - Adolf Rizzler 🗿&quot; &amp;#x3C;&amp;#x3C; x &amp;#x3C;&amp;#x3C; endl;
+
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;Observing the logfile,
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/logfile.CDQ6qzsm_eSnK9.webp&quot; alt=&quot;&quot;&gt;
+We should focus that flag is paired up on [2025-01-01], so we should patch our c code to run on that time stamp, and which we just need to fix the seed() function
+Part that affect:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;unsigned int s = seed();
+srand(s);
+int x = rand();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Patched seed() function:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;// Brute-force timestamp around 2025-01-01
+unsigned int seed() {
+    static time_t test_time = 1735689600;  // 2025-01-01 00:00:00 UTC
+    if (test_time &amp;#x3C;= 1735775999) {  // 2025-01-01 23:59:59 UTC
+        return static_cast&amp;#x3C;unsigned int&gt;(test_time++);
+    }
+    return static_cast&amp;#x3C;unsigned int&gt;(time(nullptr)); // Fallback to current time
+}
+// -------------------------------------------
+// You may also add the line for Found correct seed: to indicate that you found correct seed
+if (flag.find(&quot;a9ba358e&quot;) != string::npos) { 
+    ofstream outfile(&quot;./flag&quot;); 
+    if (outfile.is_open()) { 
+        outfile &amp;#x3C;&amp;#x3C; &quot;EQCTF{&quot; &amp;#x3C;&amp;#x3C; flag &amp;#x3C;&amp;#x3C; &quot;}&quot;; 
+        outfile.close(); } 
+        cout &amp;#x3C;&amp;#x3C; &quot;Found correct seed: &quot; &amp;#x3C;&amp;#x3C; s &amp;#x3C;&amp;#x3C; endl; 
+        break; 
+    }
+...
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;Due to the usage of openssl/sha.h, we should compile our C++ file as below&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;g++ -o gen_z chall.cpp -lssl -lcrypto
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;Execute the file&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;./gen_z
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Final result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/correctSeed.Cj_PW3GY_23XS2J.webp&quot; alt=&quot;&quot;&gt;
+And flag file is generated:
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/flag.fZPoe3fx_Z2abYJp.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;</content:encoded><h:img src="/_astro/eqctfbanner.BhVFHB-a.png"/><enclosure url="/_astro/eqctfbanner.BhVFHB-a.png"/></item><item><title>UTM CyberX Internal CTF 2024</title><link>https://gr1d-init.github.io/blog/cyberxctf2024</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/cyberxctf2024</guid><description>Writeups for UTM CyberX Internal CTF 2024</description><pubDate>Fri, 27 Dec 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Forensics&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h2&gt;Apocalypse&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.C4n4xyLH_1AvlSD.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;Description&lt;/h3&gt;
+&lt;p&gt;Notorious hacker CyberSteal6969 has struck again, this time targeting CyberX, stealing a highly confidential flag. Our team managed to seize his personal computer, but the system was wiped clean, except for a single, suspicious image left behind.&lt;/p&gt;
+&lt;p&gt;Reports suggest CyberSteal6969 may have been communicating with his counterpart using morse code from video. But leave no stone unturned. Can you uncover the secrets within and retrieve the stolen flag?&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4&gt;Goals&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Use pngchecker to check the status of the given image, obtained ERROR:&quot;additional data after IEND chunk&quot;, which is after the cropped image&lt;/li&gt;
+&lt;li&gt;Use Acropalypse-Multi-Tool to recover the full image
+https://www.youtube.com/watch?v=R866SnJoKQg&lt;/li&gt;
+&lt;li&gt;Login to flickr with the credentials given&lt;/li&gt;
+&lt;li&gt;Try to find some useful informations across profile&lt;/li&gt;
+&lt;li&gt;Grab the pictures and analyse the metadata&lt;/li&gt;
+&lt;li&gt;Use wayback machine to track past version across the sites&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h4&gt;Steps&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;pngchecker analyse the image&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/pngchecker.Bj8GwY4s_Z1xNjkf.webp&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;li&gt;Use the script to recover the full image&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;import zlib
+import io
+import struct
+import tempfile
+import os
+
+class Acropalypse():
+    def parse_png_chunk(self, stream):
+        size = int.from_bytes(stream.read(4), &quot;big&quot;)
+        ctype = stream.read(4)
+        body = stream.read(size)
+        csum = int.from_bytes(stream.read(4), &quot;big&quot;)
+        assert(zlib.crc32(ctype + body) == csum)
+        return ctype, body
+
+    def pack_png_chunk(self, stream, name, body):
+        stream.write(len(body).to_bytes(4, &quot;big&quot;))
+        stream.write(name)
+        stream.write(body)
+        crc = zlib.crc32(body, zlib.crc32(name))
+        stream.write(crc.to_bytes(4, &quot;big&quot;))
+        
+    def reconstruct_image(self, cropped_image_file, img_width, img_height, rgb_alpha):
+        PNG_MAGIC = b&quot;\x89PNG\r\n\x1a\n&quot;
+
+        orig_width = img_width
+        orig_height = img_height
+
+        with open(cropped_image_file, &quot;rb&quot;) as f_in:
+            magic = f_in.read(len(PNG_MAGIC))
+            assert magic == PNG_MAGIC
+
+            # find end of cropped PNG
+            while True:
+                ctype, body = self.parse_png_chunk(f_in)
+                if ctype == b&quot;IEND&quot;:
+                    break
+
+            # grab the trailing data
+            trailer = f_in.read()
+            
+            print(f&quot;Found {len(trailer)} trailing bytes!&quot;)
+
+            # find the start of the next idat chunk
+            try:
+                next_idat = trailer.index(b&quot;IDAT&quot;, 12)
+            except ValueError:
+                raise Exception(&quot;No trailing IDATs found!&quot;)
+
+            # skip first 12 bytes in case they were part of a chunk boundary
+            idat = trailer[12:next_idat-8] # last 8 bytes are crc32, next chunk len
+
+            stream = io.BytesIO(trailer[next_idat-4:])
+
+            while True:
+                ctype, body = self.parse_png_chunk(stream)
+                if ctype == b&quot;IDAT&quot;:
+                    idat += body
+                elif ctype == b&quot;IEND&quot;:
+                    break
+                else:
+                    raise Exception(&quot;Unexpected chunk type: &quot; + repr(ctype))
+
+            idat = idat[:-4] # slice off the adler32
+
+            print(f&quot;Extracted {len(idat)} bytes of idat!&quot;)
+
+            print(&quot;Building bitstream...&quot;)
+            bitstream = []
+            for byte in idat:
+                for bit in range(8):
+                    bitstream.append((byte &gt;&gt; bit) &amp;#x26; 1)
+
+            # add some padding so we don&apos;t lose any bits
+            for _ in range(7):
+                bitstream.append(0)
+
+            print(&quot;Reconstructing bit-shifted bytestreams...&quot;)
+            byte_offsets = []
+            for i in range(8):
+                shifted_bytestream = []
+                for j in range(i, len(bitstream)-7, 8):
+                    val = 0
+                    for k in range(8):
+                        val |= bitstream[j+k] &amp;#x3C;&amp;#x3C; k
+                    shifted_bytestream.append(val)
+                byte_offsets.append(bytes(shifted_bytestream))
+
+            # bit wrangling sanity checks
+            assert(byte_offsets[0] == idat)
+            assert(byte_offsets[1] != idat)
+
+            print(&quot;Scanning for viable parses...&quot;)
+
+            # prefix the stream with 32k bytes so backrefs can work
+            prefix_length = 0x8000
+            prefix = b&quot;\x00&quot; + (prefix_length).to_bytes(2, &quot;little&quot;) + (prefix_length ^ 0xffff).to_bytes(2, &quot;little&quot;) + b&quot;\x00&quot; * prefix_length
+
+            for i in range(len(idat)):
+                truncated = byte_offsets[i%8][i//8:]
+
+                # only bother looking if it&apos;s (maybe) the start of a non-final adaptive huffman coded block
+                if truncated[0]&amp;#x26;7 != 0b100:
+                    continue
+
+                d = zlib.decompressobj(wbits=-15)
+                try:
+                    decompressed = d.decompress(prefix+truncated) + d.flush(zlib.Z_FINISH)
+                    decompressed = decompressed[prefix_length:] # remove leading padding
+                    if d.eof and d.unused_data in [b&quot;&quot;, b&quot;\x00&quot;]: # there might be a null byte if we added too many padding bits
+                        print(f&quot;Found viable parse at bit offset {i}!&quot;)
+                        # XXX: maybe there could be false positives and we should keep looking?
+                        break
+                    else:
+                        print(f&quot;Parsed until the end of a zlib stream, but there was still {len(d.unused_data)} bytes of remaining data. Skipping.&quot;)
+                except zlib.error as e: # this will happen almost every time
+                    pass
+            else:
+                print(&quot;Failed to find viable parse!&quot;)
+                raise Exception(&quot;Failed to find viable parse!&quot;)
+
+            print(&quot;Generating output PNG...&quot;)
+
+            output_path = os.path.join(tempfile.gettempdir(), &apos;restored.png&apos;)
+            with open(output_path, &quot;wb&quot;) as out:
+                out.write(PNG_MAGIC)
+
+                ihdr = b&quot;&quot;
+                ihdr += orig_width.to_bytes(4, &quot;big&quot;)
+                ihdr += orig_height.to_bytes(4, &quot;big&quot;)
+                ihdr += (8).to_bytes(1, &quot;big&quot;) # bitdepth
+                if rgb_alpha:
+                    ihdr += (6).to_bytes(1, &quot;big&quot;) # true colour with alpha
+                else:
+                    ihdr += (2).to_bytes(1, &quot;big&quot;) # true colour
+                ihdr += (0).to_bytes(1, &quot;big&quot;) # compression method
+                ihdr += (0).to_bytes(1, &quot;big&quot;) # filter method
+                ihdr += (0).to_bytes(1, &quot;big&quot;) # interlace method
+
+                self.pack_png_chunk(out, b&quot;IHDR&quot;, ihdr)
+
+                # fill missing data with solid magenta
+                if rgb_alpha:
+                    reconstructed_idat = bytearray((b&quot;\x00&quot; + b&quot;\xff\x00\xff\xff&quot; * orig_width) * orig_height)
+                else:
+                    reconstructed_idat = bytearray((b&quot;\x00&quot; + b&quot;\xff\x00\xff&quot; * orig_width) * orig_height)
+
+                # paste in the data we decompressed
+                reconstructed_idat[-len(decompressed):] = decompressed
+
+                self.pack_png_chunk(out, b&quot;IDAT&quot;, zlib.compress(reconstructed_idat))
+                self.pack_png_chunk(out, b&quot;IEND&quot;, b&quot;&quot;)
+
+            print(&quot;Done!&quot;)
+            return output_path
+
+# Create an instance of the Acropalypse class
+acropalypse = Acropalypse()
+
+# Reconstruct the image using the correct resolution of 1920x1080
+output_image_path = acropalypse.reconstruct_image(&apos;cm.png&apos;, 1920, 1080, True) // change to your input image file name
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;References: https://youtu.be/R866SnJoKQg?si=rby5gJoYa2s9zR4N&lt;/p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;Retrieve the recovered full image from the specified output directory: /tmp folder
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/restored.D8Nqn219_BhaT1.webp&quot; alt=&quot;&quot;&gt;&lt;/li&gt;
+&lt;li&gt;Login to flickr with the credentials obtained from the recovered image&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;cybersteal6969@gmail.com
+sh8UPt-S&quot;Cp-6i+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/login.C8rI4CJP_Z2pUobN.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+5. Browse through cybersteal6969&apos;s profile, we found two videos, flag1 and flag2&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/cyberstealprofiile.Ci2fFgDc_19weuK.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+6. From the video, we analyse the morse code, given &quot;NO FLAG FOR YOU TRY SOMETHING ELSE&quot;
+Morse Code Analyser: https://morsecode.world/international/decoder/audio-decoder-adaptive.html
+7. From the videos, we know that, it was posted by info stealer6969, shared to cybersteal6969, two of them are communicating&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/infostealerposted.Bw6rEp4w_156IcI.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+8. Enter info stealer6969 profile, we found another video, named flag, analyse the morse code, we get &quot;GOODJOBG3TT1NGH3R3&quot;, this is the first decoy flag&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/infostealervid.DXNwlSn0_ZtBvbG.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+9. Keep browsing, we found that info stealer6969 uploaded bunch of pictures&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/infopic.BM0iuDxh_21dxf8.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+10. These pictures containing secret info in their metadata
+11. Using exiftool, we found that cat.jpg directs us to https://cyberxstupid.blogspot.com/2024/12/blog-post.html, shown at comment section&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/cat.BAUEqhp1_Zs5cIe.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/exifcat.DhzIJ5PR_1H0x1d.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+12. Randomly clicking through the site, we found the second decoy flag CyberX{c4t_m0us3_g4m3_34sy}&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/first.D42fyZ31_ZdQxN6.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+13. Here we need to use Wayback Mahcine, archive.org, to track the past version of the site.&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/wayback.CMN4U3K5_Z1Ypaov.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+14. Under the same link but in past version, we obtain the final flag CyberX{c4t_m0us3_pl4y_m4d3_34s13r}&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/waybackflag.C94webAU_1n6iC8.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;</content:encoded><h:img src="/_astro/cyberx.B36SDQ5v.png"/><enclosure url="/_astro/cyberx.B36SDQ5v.png"/></item><item><title>Personalized Customization Guide</title><link>https://gr1d-init.github.io/blog/customize</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/customize</guid><description>astro-theme-pure Personalized Customization Guide</description><pubDate>Sat, 27 Jul 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Site Configuration&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/cworld1/astro-theme-pure&quot;&gt;astro-theme-pure&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Customizing this theme requires adjusting a significant amount of source code.&lt;/p&gt;
 &lt;p&gt;We have made efforts to centralize the configuration options in the &lt;code&gt;src/site.config.ts&lt;/code&gt; file for user convenience and have integrated a variety of common social media/tools icons. If you want to add new icons, you will need to modify the source code yourself.&lt;/p&gt;

@@ -159,6 +159,20 @@ declare module 'astro:content' {
   collection: "post";
   data: InferEntrySchema<"post">
 } & { render(): Render[".md"] };
+"cyberxctf2024/index.md": {
+	id: "cyberxctf2024/index.md";
+  slug: "cyberxctf2024";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
+"eqctf2025/index.md": {
+	id: "eqctf2025/index.md";
+  slug: "eqctf2025";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
 "markdown/index.md": {
 	id: "markdown/index.md";
   slug: "markdown";

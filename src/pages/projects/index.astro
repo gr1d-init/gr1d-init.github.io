@@ -29,18 +29,24 @@ const headings = [
     class='my-2'
     project={[
       {
-        name: 'Rust Learning',
-        description: 'Some notes and code about CWorld learning Rust',
-        links: [{ type: 'github', href: 'https://github.com/cworld1/rust-learning' }]
+        image:'blueredflag.png',
+        name: 'CTF Writeups Compilation',
+        description: 'A collection of writeups for CTFs I have participated in',
+        links: [{ type: 'github', href: 'https://github.com/gr1d-init/CTF-Writeups' }]
       },
       {
-        name: 'CS 213 Learning',
-        description: 'Notes, code and experiences for Introduction to Computer Systems course',
+        image:'eqctf.png',
+        name: 'EQCTF-2025',
+        description: 'Equilibrium Solo CTF 2025 Writeups',
         links: [
+          {
+            type: 'site',
+            href: 'https://gr1d-init.github.io/blog/eqctf2025'
+          },
           {
             type: 'github',
             href: 'https://github.com/zhuozhiyongde/Introduction-To-Computer-System-2023Fall-PKU'
-          }
+          },
         ]
       }
     ]}
@@ -49,16 +55,28 @@ const headings = [
     <ProjectSection
       project={[
         {
-          name: 'Search Switcher',
-          description: 'Add links to each other in search engines',
-          links: [{ type: 'github', href: 'https://github.com/cworld1/search-switcher' }]
+          image: 'cyberx.png',
+          name: 'CyberX-CTF-2024',
+          description: 'UTM CyberX Internal CTF 2024 Writeups',
+          links: [
+          {
+            type: 'site',
+            href: 'https://gr1d-init.github.io/blog/cyberxctf2024'
+          },
+          { 
+            type: 'github', 
+            href: 'https://github.com/gr1d-init/CTF-Writeups/tree/main/CyberX-CTF-2024' 
+          }]
         },
         {
-          name: 'Pure Baidu',
-          description: 'Baidu search page beautification module',
+          image: 'picoctf.png',
+          name: 'picoCTF',
+          description: 'Writeups for picoCTF practice platform',
           links: [
-            { type: 'doc', href: 'https://cworld0.com/blog/pure-baidu' },
-            { type: 'site', href: 'https://userstyles.org/styles/173673/pure' }
+            { 
+              type: 'github', 
+              href: 'https://github.com/gr1d-init/CTF-Writeups/tree/main/picoCTF' 
+            }
           ]
         }
       ]}
@@ -70,18 +88,19 @@ const headings = [
   <ProjectSection
     project={[
       {
-        name: '🤖 Arknights Telegram Bot',
-        description: 'Telegram Bot for Arknights',
+        name: 'SKEE1033-SPML',
+        description: 'Assignment (Scientific Programming) - Intro to Machine Learning',
         links: [
-          { type: 'github', href: 'https://github.com/IJNKAWAKAZE/arknights_bot' },
-          { type: 'site', href: 'https://t.me/PtiIopsis_bot' },
+          { type: 'github', 
+            href: 'https://github.com/gr1d-init/SKEE1033-SPML' 
+          },
           {
             type: 'doc',
-            href: 'https://github.com/IJNKAWAKAZE/arknights_bot/blob/main/docs/Development.md'
+            href: 'https://github.com/gr1d-init/SKEE1033-SPML/blob/main/Documentation/spProjectFinalCopy.pdf'
           }
         ]
       },
-      {
+      /*{
         name: '💄 PKU Art',
         description: 'A script to beautify pku course website',
         links: [
@@ -89,9 +108,10 @@ const headings = [
           { type: 'site', href: 'https://github.com/zhuozhiyongde/pku-art' },
           { type: 'doc', href: 'https://docs.arthals.ink/docs/pku-art' }
         ]
-      }
+      }*/
     ]}
   />
+  {/*
   <Collapse title='Some old projects'>
     <ProjectSection
       project={[
@@ -111,7 +131,7 @@ const headings = [
       ]}
     />
   </Collapse>
-
+  */}
   
   <h2 id='themes'>Themes</h2>
   <ProjectSection
