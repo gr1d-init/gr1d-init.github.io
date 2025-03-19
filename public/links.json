@@ -5,6 +5,18 @@
       "desc": "Common links included in circle friends",
       "link_list": [
         {
+          "name": "w_11",
+          "intro": "In a world of worries, be the warrior.",
+          "link": "https://weixuan0110.github.io/",
+          "avatar": "https://avatars.githubusercontent.com/u/130538576?v=4"
+        },
+        {
+          "name": "bakayang",
+          "intro": "You have one shot, one opportunity.",
+          "link": "https://arthals.ink/",
+          "avatar": "https://bakayang.vercel.app/images/kirby.png"
+        },
+        {
           "name": "Arthals' ink",
           "intro": "所见高山远木，阔云流风；所幸岁月盈余，了无拘束",
           "link": "https://arthals.ink/",
