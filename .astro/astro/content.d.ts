@@ -173,6 +173,13 @@ declare module 'astro:content' {
   collection: "post";
   data: InferEntrySchema<"post">
 } & { render(): Render[".md"] };
+"kalmarctf2025/index.md": {
+	id: "kalmarctf2025/index.md";
+  slug: "kalmarctf2025";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
 "markdown/index.md": {
 	id: "markdown/index.md";
   slug: "markdown";
