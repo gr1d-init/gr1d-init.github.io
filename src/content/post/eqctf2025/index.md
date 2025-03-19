@@ -5,7 +5,7 @@ description: 'Writeups for Equilibrium Solo CTF 2025'
 tags:
   - CTF
   - RE
-heroImage: { src: './eqctfbanner.png', color: '#bababa'}
+heroImage: { src: './assets/eqctfbanner.png', color: '#bababa'}
 language: 'English'
 ---
 

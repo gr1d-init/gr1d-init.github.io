@@ -180,6 +180,13 @@ declare module 'astro:content' {
   collection: "post";
   data: InferEntrySchema<"post">
 } & { render(): Render[".md"] };
+"picoctf2025/index.md": {
+	id: "picoctf2025/index.md";
+  slug: "picoctf2025";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
 };
 
 	};

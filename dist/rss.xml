@@ -1,4 +1,300 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>EQCTF 2025</title><link>https://gr1d-init.github.io/blog/eqctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/eqctf2025</guid><description>Writeups for Equilibrium Solo CTF 2025</description><pubDate>Sat, 25 Jan 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Reverse Engineering&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>picoCTF 2025</title><link>https://gr1d-init.github.io/blog/picoctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/picoctf2025</guid><description>Writeups for picoCTF 2025</description><pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;[Reverse Engineering]&lt;/h2&gt;
+&lt;h2&gt;Flag Hunters&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.D4LF0PKC_ZrNLQ6.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;p&gt;When the program starts, the lip is set to the line [VERSE], to retrieve the secret_intro, we need to alter the program so the lip variable set to the line of flag&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Pico warriors rising, puzzles laid bare,
+Solving each challenge with precision and flair.
+With unity and skill, flags we deliver,
+The ether’s ours to conquer, &apos;&apos;&apos;\
++ flag + &apos;\n&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;as shown, flag is at line 4&lt;/p&gt;
+&lt;p&gt;so passing index 0 to 3 will works, printing at the start of the lines at most line 4, index 3&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Payload:&lt;/strong&gt; &lt;code&gt;&amp;#x3C;any_text&gt;;RETURN &amp;#x3C;0 to 3&gt;   (This is not injection)&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{70637h3r_f0r3v3r_c659e814}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Quantum Scrambler&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.BuyNjina_1PqRsl.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Decrypt the encryption and retrieve the flag&lt;/li&gt;
+&lt;li&gt;Dissect the elements, and observe the scramble&lt;/li&gt;
+&lt;li&gt;Found final payload, decrypt with reversed scrambler&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;p&gt;Reversed scrambler:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;import ast
+
+def flatten(lst):
+    flat = []
+    for item in lst:
+        if isinstance(item, list):
+            flat.extend(flatten(item))
+        else:
+            flat.append(item)
+    return flat
+
+def unscramble(cypher):
+    print(&quot;Outer list elements:&quot;)
+    for index, element in enumerate(cypher):
+        print(f&quot;Element {index}: {element}&quot;)
+    print(&quot;-&quot; * 40)
+    
+    flat_list = flatten(cypher)
+    
+    hex_strings = [s for s in flat_list if isinstance(s, str) and s.startswith(&quot;0x&quot;)]
+    
+    flag_chars = [chr(int(h, 16)) for h in hex_strings]
+    flag = &apos;&apos;.join(flag_chars)
+    return flag
+
+def main():
+    input_file = &apos;output.txt&apos;
+    
+    try:
+        with open(input_file, &apos;r&apos;) as f:
+            cipher_text = f.read()
+    except Exception as e:
+        print(f&quot;Error reading file {input_file}: {e}&quot;)
+        return
+    
+    try:
+        cypher = ast.literal_eval(cipher_text)
+    except Exception as e:
+        print(&quot;Error interpreting cipher text:&quot;, e)
+        return
+    
+    flag = unscramble(cypher)
+    print(&quot;Recovered flag:&quot;, flag)
+
+if __name__ == &apos;__main__&apos;:
+    main()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Final payload:&lt;/strong&gt; &lt;code&gt;[[&apos;0x70&apos;],[&apos;0x69&apos;],[&apos;0x63&apos;],[&apos;0x6f&apos;],[&apos;0x43&apos;],[&apos;0x54&apos;],[&apos;0x46&apos;],[&apos;0x7b&apos;],[&apos;0x70&apos;],[&apos;0x79&apos;],[&apos;0x74&apos;],[&apos;0x68&apos;],[&apos;0x6f&apos;],[&apos;0x6e&apos;],[&apos;0x5f&apos;],[&apos;0x69&apos;],[&apos;0x73&apos;],[&apos;0x5f&apos;],[&apos;0x77&apos;],[&apos;0x65&apos;],[&apos;0x69&apos;],[&apos;0x72&apos;],[&apos;0x64&apos;],[&apos;0x65&apos;],[&apos;0x66&apos;],[&apos;0x38&apos;],[&apos;0x65&apos;],[&apos;0x61&apos;],[&apos;0x30&apos;],[&apos;0x63&apos;],[&apos;0x66&apos;],[&apos;0x7d&apos;]]&lt;/code&gt;&lt;br&gt;
+&lt;em&gt;Save this as output.txt&lt;/em&gt;&lt;/p&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{python_is_weirdef8ea0cf}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Binary Instrumentation 1&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.CNmZgqmX_7jYbq.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;The binary bininst1.exe calls the &lt;code&gt;Sleep&lt;/code&gt; function from kernel32.dll&lt;/li&gt;
+&lt;li&gt;Using frida-trace, we generate the handler scripts for API functions&lt;/li&gt;
+&lt;li&gt;Intercept any call to &lt;code&gt;Sleep&lt;/code&gt;, in this case, under &lt;code&gt;KERNEL32.dll&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;We then set sleep duration to 0, avoiding the program from sleeping.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Using frida-trace&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;frida-trace -i &quot;Sleep&quot; ./bininst1.exe
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Intercept the handler, by modifying the handler generated, changing sleep duration to zero.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-js&quot;&gt;// KERNEL32.DLL/Sleep.js
+var sleepAddr = Module.getExportByName(&quot;kernel32.dll&quot;, &quot;Sleep&quot;);
+Interceptor.attach(sleepAddr, {
+    onEnter: function (args) {
+        // Log the original sleep duration (for debugging)
+        console.log(&quot;Original sleep time: &quot; + args[0].toInt32());
+        // Change the sleep duration to 0
+        args[0] = ptr(0);
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{r3d_1s_th3_ult1m4t3_cur3_f0r_54dn355_}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Binary Instrumentation 2&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.CdWZ-AHf_Z19GuAN.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Disassemble with ghidra, look for suspicious function&lt;/li&gt;
+&lt;li&gt;Hook with frida&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Deploy the script that hook suspicious function at &lt;code&gt;0x1dc0&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-js&quot;&gt;// Get the module base address for bininst2.exe
+var moduleBase = Module.findBaseAddress(&quot;bininst2.exe&quot;);
+console.log(&quot;Module base address: &quot; + moduleBase);
+
+// Calculate the target function address using a known offset (update this offset as needed)
+var funOffset = 0x1dc0; // Adjust this based on your analysis
+var targetFunction = moduleBase.add(funOffset);
+console.log(&quot;Hooking function at: &quot; + targetFunction);
+
+// Hook the target function (FUN_140001dc0)
+Interceptor.attach(targetFunction, {
+    onEnter: function(args) {
+        // Assume:
+        //   args[0] is a pointer to the flag data
+        //   args[1] is the length of the flag data
+        var length = args[1].toInt32();
+        try {
+            // Try to read the flag data as a UTF-8 string
+            var flagData = Memory.readUtf8String(args[0], length);
+            console.log(&quot;Flag data intercepted (utf8): &quot; + flagData);
+        } catch (err) {
+            console.log(&quot;Error reading flag data as UTF-8: &quot; + err);
+            // If reading as a string fails, dump the raw bytes
+            console.log(&quot;Flag data intercepted (raw):\n&quot; + hexdump(args[0], { length: length, header: true, ansi: false }));
+        }
+    },
+    onLeave: function(retval) {
+        console.log(&quot;FUN_140001dc0 returned: &quot; + retval);
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Run the script, then find for the flag&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;frida -l &amp;#x3C;script&gt;.js -f ./bininst2.exe
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;Base64 Encoded Flag:&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/solution.BxGutl3z_1IGleY.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{fr1da_f0r_b1n_in5trum3nt4tion!_b21aef39}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;[Forensics]&lt;/h2&gt;
+&lt;h2&gt;RED&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.CdfRLhKv_Z6uKu6.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Steganography, just upload to Aperi&apos;Solve, ez flag&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/solution.CqqNXB79_2luwlo.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{r3d_1s_th3_ult1m4t3_cur3_f0r_54dn355_}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;flags are stepic&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.Da1iaKMg_ZH7ede.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Find the country that doesn&apos;t exist, the flag persists&lt;/li&gt;
+&lt;li&gt;Download the country flag&lt;/li&gt;
+&lt;li&gt;Search for stepic tool&lt;br&gt;
+- https://shankaraman.wordpress.com/tag/ctf/&lt;br&gt;
+- https://code.tools/man/1/stepic/&lt;br&gt;
+- https://pypi.org/project/stepic/&lt;/li&gt;
+&lt;li&gt;Install stepic tool through pip&lt;/li&gt;
+&lt;li&gt;Unhide the flag&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/upz.C2g3mM-C_EB0TR.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{fl4g_h45_fl4g57f48d94}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Ph4nt0m 1ntrud3r&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.BGJIE0a9_Z1Ilkfj.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Sort the time, since the reference times are messed up&lt;/li&gt;
+&lt;li&gt;Decode flag encoded in base64 in a series of consecutive packets&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/solution.DRuGFjYT_ZtcO0W.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{1t_w4snt_th4t_34sy_tbh_4r_e5e8c78d}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Event-Viewing&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.BX-UQJ4U_6T3gD.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Lookup 1033 Event, msi package install event id&lt;/li&gt;
+&lt;li&gt;Filter with date and time, look for suspicious event after 1033 happen within a short time range, about 20 minutes, found&lt;/li&gt;
+&lt;li&gt;&quot;EVERY TIME&quot; &amp;#x3C;---(from question), so clear date and time filter, find with keyword &quot;shutdown.exe&quot; throughout whole event log&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;p&gt;Part 1:&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/part1log.kv7akOGi_Ztx4yX.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;strong&gt;Base64:&lt;/strong&gt; &lt;code&gt;cGljb0NURntFdjNudF92aTN3djNyXw==&lt;/code&gt;
+&lt;strong&gt;Flag 1:&lt;/strong&gt; &lt;code&gt;picoCTF{Ev3nt_vi3wv3r_&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Part 2:&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/part2log.CUvMGrw9_ZvrVcV.webp&quot; alt=&quot;&quot;&gt;
+&lt;strong&gt;Base64:&lt;/strong&gt; &lt;code&gt;MXNfYV9wcjN0dHlfdXMzZnVsXw==&lt;/code&gt;
+&lt;strong&gt;Flag 2:&lt;/strong&gt; &lt;code&gt;1s_a_pr3tty_us3ful_&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Part 3:&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/part3log.ezD40MZv_Z2kUyaA.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;strong&gt;Base64:&lt;/strong&gt; &lt;code&gt;dDAwbF84MWJhM2ZlOX0=&lt;/code&gt;
+&lt;strong&gt;Flag 3:&lt;/strong&gt; &lt;code&gt;t00l_81ba3fe9}&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{Ev3nt_vi3wv3r_1s_a_pr3tty_us3ful_t00l_81ba3fe9}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;[Binary Exploitation]&lt;/h2&gt;
+&lt;h2&gt;PIE TIME&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.Ca4ZVEOY_2rbfY3.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Call the win() function&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Disassemble with gdb&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/disass.MY8Sw7pT_Zvbbx7.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Observe the difference in address between main function and win function
+The difference is 0x96, thus, to call the function&apos;s address, it must always be &lt;code&gt;main()&lt;/code&gt; - &lt;code&gt;0x96&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;Launch the challenge&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/solution.fxn2ZW8i_ZTyh7q.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{b4s1c_p051t10n_1nd3p3nd3nc3_a267144a}&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;[General Skills]&lt;/h2&gt;
+&lt;h2&gt;YaraRules0x100&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.DG7V_clH_Z1vIV7F.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;To detect malware sample with YARA rule while avoiding false positives and false negatives.&lt;/li&gt;
+&lt;li&gt;Malware can exist in packed(obfuscated) or unpacked(fully extracted in memory), the rule should cover both version.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;rule suspacked
+{
+    strings:
+        $packed_div = &quot;.text$div&quot;
+
+    condition:
+        all of them
+}
+
+rule susunpacked
+{
+    strings:
+        $unpacked_xml = &quot;&amp;#x3C;?xml version=&apos;1.0&apos; encoding=&apos;UTF-8&apos; standalone=&apos;yes&apos;?&gt;&quot;
+        $unpacked_dll = &quot;ADVAPI32.dll&quot;
+
+    condition:
+        all of them
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;Search for yara rule, follow the hint given, work with the format:
+https://yara.readthedocs.io/en/stable/writingrules.html&lt;/li&gt;
+&lt;li&gt;Open file with ghidra, search for strings, do trial and error&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;picoCTF{yara_rul35_r0ckzzz_74c37bd8}&lt;/code&gt;&lt;/p&gt;</content:encoded><h:img src="/_astro/picoCTFbanner.BBuZga6A.png"/><enclosure url="/_astro/picoCTFbanner.BBuZga6A.png"/></item><item><title>EQCTF 2025</title><link>https://gr1d-init.github.io/blog/eqctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/eqctf2025</guid><description>Writeups for Equilibrium Solo CTF 2025</description><pubDate>Sat, 25 Jan 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Reverse Engineering&lt;/h2&gt;
 &lt;hr&gt;
 &lt;h2&gt;Baka Mitai&lt;/h2&gt;
 &lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.CsKevD8e_Z178FvC.webp&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;
