@@ -1,4 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>KalmarCTF 2025</title><link>https://gr1d-init.github.io/blog/kalmarctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/kalmarctf2025</guid><description>Writeups for kalmarCTF 2025</description><pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Misc&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>pingCTF 2025</title><link>https://gr1d-init.github.io/blog/pingctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/pingctf2025</guid><description>Writeups for pingCTF 2025</description><pubDate>Mon, 24 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Misc&lt;/h2&gt;
+&lt;h2&gt;ones-and-zeroes&lt;/h2&gt;
+&lt;h2&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.CRaq_wyo_Z2kYfNS.webp&quot; alt=&quot;Question&quot;&gt;&lt;/h2&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Download PulseView to decode the I2C signal&lt;/li&gt;
+&lt;li&gt;Identify the SDA and SCL, decode the signal, focus on DATA WRITE hexdump.&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/hexdump.JjLducdK_Z1688Q0.webp&quot; alt=&quot;hexdump&quot;&gt;&lt;/li&gt;
+&lt;li&gt;Research on connection between I2C port, how it communicate with LCD pane.&lt;/li&gt;
+&lt;li&gt;From LCD pane datasheet, decode the message.
+https://cdn.sparkfun.com/assets/9/5/f/7/b/HD44780.pdf&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3&gt;Solution:&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Identify the pinouts and we realise that the focus is only on I2C outputs SDA and SCL, at the end passing to HD44780 LCD Pane, so we don&apos;t bother anything on breadboard.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/setup1.CB43ILVn_23kalz.webp&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;img src=&quot;./assets/ref.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Since we are the LED controller is PCF8574, we are going to operate HD44780 on 4-bit data mode.&lt;br&gt;
+To retrieve a single ASCII Hex character, it work on High nibble and Low nibble.&lt;br&gt;
+As in hexdump instruction, it exist like this:&lt;br&gt;
+- High nibble, E(Enable)= 1&lt;br&gt;
+- High nibble, E(Enable) = 0&lt;br&gt;
+- Low nibble, E(Enable) = 1&lt;br&gt;
+- Low nibble, E(Enable) = 0&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dissect the High Nibble and Low Nibble binaries, combine them into single series, decode it into ascii characters.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Solution overview&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/overview.DLUu8Wwu_i0jbH.webp&quot; alt=&quot;Overview&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Final Result&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Flag:&lt;/strong&gt; &lt;code&gt;pingCTF{Silicon_Is_Talking_To_Me}&lt;/code&gt;&lt;/p&gt;</content:encoded><h:img src="/_astro/pingCTFbanner.1jdtJ9nV.png"/><enclosure url="/_astro/pingCTFbanner.1jdtJ9nV.png"/></item><item><title>KalmarCTF 2025</title><link>https://gr1d-init.github.io/blog/kalmarctf2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/kalmarctf2025</guid><description>Writeups for kalmarCTF 2025</description><pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Misc&lt;/h2&gt;
 &lt;h2&gt;babyKalmarCTF&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;Question: Ever played a CTF inside a CTF?
 
@@ -755,7 +793,73 @@ if (flag.find(&quot;a9ba358e&quot;) != string::npos) {
 &lt;hr&gt;
 &lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/correctSeed.Cj_PW3GY_23XS2J.webp&quot; alt=&quot;&quot;&gt;
 And flag file is generated:
-&lt;img src=&quot;https://gr1d-init.github.io/_astro/flag.fZPoe3fx_Z2abYJp.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;</content:encoded><h:img src="/_astro/eqctfbanner.BhVFHB-a.png"/><enclosure url="/_astro/eqctfbanner.BhVFHB-a.png"/></item><item><title>UTM CyberX Internal CTF 2024</title><link>https://gr1d-init.github.io/blog/cyberxctf2024</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/cyberxctf2024</guid><description>Writeups for UTM CyberX Internal CTF 2024</description><pubDate>Fri, 27 Dec 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Forensics&lt;/h2&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/flag.fZPoe3fx_Z2abYJp.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;Github&lt;/h2&gt;
+&lt;p&gt;Here compiles all the challenge related to bruteforing github commit SHA1 hashes&lt;/p&gt;
+&lt;h3&gt;Goals&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Some commits are deleted, but it is still hidden on github with original SHA1 key unless the whole repo is deleted and rebuilt.&lt;/li&gt;
+&lt;li&gt;We need to scrape the hidden commit by doing bruteforcing from hex 0000 until ffff to retrieve all the available commit hashes&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Challenges&lt;/h3&gt;
+&lt;p&gt;| Challenges | Category |
+| -------- | -------- |
+| Garry: Beyond Music&apos;s End 3 | OSINT |
+| Github is weirdddd 1.0 | Brainfuck |
+| Github is weirdddd 2.0 | Brainfuck |&lt;/p&gt;
+&lt;h3&gt;Solution&lt;/h3&gt;
+&lt;p&gt;@gr1d    wrote a bruteforce tool, &lt;a href=&quot;https://github.com/gr1d-init/gitsha&quot;&gt;GitSHA&lt;/a&gt;, for these challenges.&lt;/p&gt;
+&lt;h4&gt;Steps&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Install the tool.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash=&quot;&gt;git clone https://github.com/gr1d-init/gitsha.git
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Automate bruteforcing with the tool.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash=&quot;&gt;python gitsha.py -r &quot;&amp;#x3C;author&apos;s name&gt;/&amp;#x3C;repo&apos;s name&gt;&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Final result&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Garry: Beyond Music&apos;s End 3&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;3419
+4568 #
+66f8
+8da4 #
+a5b6 #
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Github is weirdddd 1.0 and 2.0&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;0067
+0b3d
+2a63
+458e (GitHub 2.0)
+481f
+4bec
+5b27
+5ef6
+621e
+693a
+724c
+8f66
+a24a
+b2ff
+c47a
+cf29
+cfba (GitHub 1.0)
+ed44
+ed90
+f6aa
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Flags&lt;/h4&gt;
+&lt;p&gt;| Challenges | Category |
+| -------- | -------- |
+| Garry: Beyond Music&apos;s End 3 | EQCTF{w1z4rd_0f_l3g3nds_1n_d1sgu1s3} |
+| Github is weirdddd 1.0 | EQCTF{hmmmmmmmm_G1t_L3ak_d@_Fl3g} |
+| Github is weirdddd 2.0 | EQCTF{Brut3333333333_D@_C0mm1t_99} |&lt;/p&gt;</content:encoded><h:img src="/_astro/eqctfbanner.BhVFHB-a.png"/><enclosure url="/_astro/eqctfbanner.BhVFHB-a.png"/></item><item><title>UTM CyberX Internal CTF 2024</title><link>https://gr1d-init.github.io/blog/cyberxctf2024</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/cyberxctf2024</guid><description>Writeups for UTM CyberX Internal CTF 2024</description><pubDate>Fri, 27 Dec 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Forensics&lt;/h2&gt;
 &lt;hr&gt;
 &lt;h2&gt;Apocalypse&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/question.C4n4xyLH_1AvlSD.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;

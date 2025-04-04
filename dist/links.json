@@ -5,6 +5,30 @@
       "desc": "Common links included in circle friends",
       "link_list": [
         {
+          "name": "CyberX",
+          "intro": "UTM CyberX Cybersecurity Club",
+          "link": "https://cyberxutm.github.io/",
+          "avatar": "https://avatars.githubusercontent.com/u/192807408?s=200&v=4"
+        },
+        {
+          "name": "aan",
+          "intro": "a blank slate, an empty hard drive.",
+          "link": "https://ilikeronnnnii.github.io/",
+          "avatar": "https://gravatar.com/avatar/4212c182cfe7f74eeec160db465144b7911ee8ae2843786385d9e6dd66e5c291.webp?size=256"
+        },
+        {
+          "name": "w_11",
+          "intro": "In a world of worries, be the warrior.",
+          "link": "https://weixuan0110.github.io/",
+          "avatar": "https://avatars.githubusercontent.com/u/130538576?v=4"
+        },
+        {
+          "name": "bakayang",
+          "intro": "You have one shot, one opportunity.",
+          "link": "https://arthals.ink/",
+          "avatar": "https://bakayang.vercel.app/images/kirby.png"
+        },
+        {
           "name": "Arthals' ink",
           "intro": "所见高山远木，阔云流风；所幸岁月盈余，了无拘束",
           "link": "https://arthals.ink/",

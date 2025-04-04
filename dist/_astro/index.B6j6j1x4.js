@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["_astro/index.oeuikxO7.js","_astro/_astro_assets.C5_CVhQn.js","_astro/astro/assets-service.3aFEbxKr.js","_astro/hoisted.BuEN0K9c.js"])))=>i.map(i=>d[i]);
+import{_ as t}from"./astro/assets-service.3aFEbxKr.js";async function o(){return t(()=>import("./index.oeuikxO7.js"),__vite__mapDeps([0,1,2,3]))}const e="@@ASTRO-LINKS@@",c="@@ASTRO-STYLES@@",r="@@ASTRO-SCRIPTS@@",l={__astroPropagation:!0,getMod:o,collectedLinks:e,collectedStyles:c,collectedScripts:r};export{l as default};

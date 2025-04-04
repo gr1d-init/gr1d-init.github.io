@@ -194,6 +194,13 @@ declare module 'astro:content' {
   collection: "post";
   data: InferEntrySchema<"post">
 } & { render(): Render[".md"] };
+"pingctf2025/index.md": {
+	id: "pingctf2025/index.md";
+  slug: "pingctf2025";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
 };
 
 	};
