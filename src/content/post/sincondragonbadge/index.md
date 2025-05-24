@@ -167,6 +167,7 @@ The dragon will... bre4th-f1r3
 ```
 
 The flag is: **bre4th-f1r3**
+
 ---
 
 ### Challenge 6
@@ -201,6 +202,7 @@ Using a semaphore decoder, each flag position corresponds to a letter:
 ![Semaphore Decoder](./assets/dcodesemaphore.webp)
 
 The flag is: **dr4gon-fru1t**
+
 ---
 
 ### Challenge 7
