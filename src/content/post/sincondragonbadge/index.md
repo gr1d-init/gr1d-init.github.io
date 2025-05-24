@@ -18,12 +18,12 @@ SinCon 2025's hardware badge reimagines Singapore's iconic Dragon Playground as 
 ### Badge Assembly
 
 First, you'll need to solder the badge with 8 LEDs. Follow the comprehensive assembly guide:
-- 📄 [Assembly Guide](./assets/sincon-dragon-solder.pdf)
+- 📄 [Assembly Guide](https://github.com/gr1d-init/gr1d-init.github.io/blob/a6a38534c63f7162651ea4e7ad0ca0fd554bcb4d/src/content/post/sincondragonbadge/assets/sincon-dragon-solder.pdf)
 
 ### Environment Setup
 
 Once your badge is assembled, set up the CTF environment:
-- 📄 [CTF Setup Guide](./assets/sincon-dragon-ctf.pdf)
+- 📄 [CTF Setup Guide](https://github.com/gr1d-init/gr1d-init.github.io/blob/a6a38534c63f7162651ea4e7ad0ca0fd554bcb4d/src/content/post/sincondragonbadge/assets/sincon-dragon-ctf.pdf)
 
 ## Challenge Writeups
 
