@@ -292,6 +292,14 @@ Introduction to Bluetooth Low Energy (BLE) hacking using mobile analysis tools.
 **Solution:**
 I didn't fully attempt this challenge. Started exploring with nRF Connect mobile app but didn't complete the challenge requirements.
 
+#### BLE-Device 2
+
+**Challenge Description:**
+Advanced BLE exploitation challenge requiring programmatic GATT characteristic enumeration and manipulation using Python scripting.
+
+**Solution:**
+I didn't complete this challenge. The author provided a Python script template using the `bleak` library for BLE communication, but I didn't successfully implement the solution to extract the flag from the target device.
+
 ---
 
 ### 🔧 Soldering & PCB Reversing
