@@ -6,7 +6,7 @@ tags:
   - Conference
   - SINCON 2025
   - Hardware
-heroImage: { src: './assets/hardwarebanner.jpeg', color: '#ffe5d4'}
+heroImage: { src: './assets/hardwarebanner.jpg', color: '#ffe5d4'}
 language: 'English'
 ---
 
