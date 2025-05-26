@@ -1,1 +1,0 @@
-import"./hoisted.BuEN0K9c.js";import"./hoisted.BY9EPMCj.js";import"./astro/assets-service.3aFEbxKr.js";const o=window.innerHeight,i=o/9,s=o*2/9,l=o*3/9,t=document.getElementById("blurImage");t&&window.addEventListener("scroll",()=>{const e=window.scrollY;e>=l?t.style.opacity="0.15":e>=s?t.style.opacity="0.3":e>=i&&(t.style.opacity="0.45")});

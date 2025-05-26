@@ -201,6 +201,27 @@ declare module 'astro:content' {
   collection: "post";
   data: InferEntrySchema<"post">
 } & { render(): Render[".md"] };
+"sincondragonbadge/index.md": {
+	id: "sincondragonbadge/index.md";
+  slug: "sincondragonbadge";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
+"sinconhardwarekampung/index.md": {
+	id: "sinconhardwarekampung/index.md";
+  slug: "sinconhardwarekampung";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
+"sinconrfidkampung/index.md": {
+	id: "sinconrfidkampung/index.md";
+  slug: "sinconrfidkampung";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
 };
 
 	};
