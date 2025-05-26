@@ -1,4 +1,3 @@
-\
 ---
 title: SinCon Shellshock & C2 Attack Analysis
 publishDate: 2025-05-26
