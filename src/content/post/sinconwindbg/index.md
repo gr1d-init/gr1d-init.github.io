@@ -75,7 +75,7 @@ Additionally, the workshop covered practical skills such as **setting breakpoint
 
 ## Practical Exercises
 
-### Lab0: (this is the challenge name)
+### Lab0
 
 First, I examined the program's behavior by running it:
 
@@ -133,7 +133,7 @@ After discovering the required input, I reran the program. This time, with the c
 
 ![Lab0 welldone](./assets/img/Lab0/welldone.png)
 
-### Lab 1: File and Content Verification Challenge
+### Lab 1
 
 First, I examined the initial behavior of the Lab 1 program:
 
@@ -191,25 +191,25 @@ Lab1!strcmp:
 00007ff6`24c890c0  5b 2d 5d 20 43 6f 75 6c-64 20 6e 6f 74 20 66 69  [-] Could not fi
 ```
 
-My debugging process started by setting a **breakpoint** at the `main` function (`bp Lab1!main`). I then used the **`pc`** (step to next call) command to iterate through the execution. This continued until I encountered a call to **`strcmp`**. Using the **`t`** (trace into) command, I stepped into **`strcmp`** and examined the arguments passed in **`rcx`** and **`rdx`**. This revealed that the program was checking for the existence of `inputs.txt` in the `C:\\Windows\\System32` directory.
+My debugging process started by setting a **breakpoint** at the `main` function (`bp Lab1!main`). I then used the **`pc`** (step to next call) command to iterate through the execution. This continued until I encountered a call to **`strcmp`**. Using the **`t`** (trace into) command, I stepped into **`strcmp`** and examined the arguments passed in **`rcx`** and **`rdx`**. This revealed that the program was checking for the existence of `input.txt` in the `C:\\Windows\\System32` directory.
 
-To observe the program's behavior with the file present, I created `inputs.txt` in the `C:\\Windows\\System32` directory and initially filled it with the string "test" for further analysis:
+To observe the program's behavior with the file present, I created `input.txt` in the `C:\\Windows\\System32` directory and initially filled it with the string "test" for further analysis:
 
 ![Added input.txt](./assets/img/Lab1/added.png)
 
 ![Found Check GIF](./assets/img/Lab1/foundcheck.gif)
 
-Upon re-examining the program's behavior with `inputs.txt` present, I again set a **breakpoint** at `main` and used **`pc`** to step through. I noticed the program seemed to loop when checking for `input.txt`. To understand why, I used the **`u`** (unassemble) command to inspect the assembly code and found a **`jne`** (jump if not equal) instruction causing the loop.
+Upon re-examining the program's behavior with `input.txt` present, I again set a **breakpoint** at `main` and used **`pc`** to step through. I noticed the program seemed to loop when checking for `input.txt`. To understand why, I used the **`u`** (unassemble) command to inspect the assembly code and found a **`jne`** (jump if not equal) instruction causing the loop.
 
 To bypass this loop and proceed to the next stage, I set a new **breakpoint (`bp`)** at the address immediately following the **`jne`** instruction. Using the **`g`** (go) command, I ran the program until this new breakpoint was hit, successfully moving past the file existence check.
 
-Continuing with **`pc`**, I eventually encountered another **`strcmp`** call. This time, it was checking the *content* of `inputs.txt`. I used **`t`** to trace into this **`strcmp`** and then **`db`** to dump the contents of **`rcx`** and **`rdx`**. This revealed that the program expected the content of `inputs.txt` to be "**Lab1.exe**". My placeholder "test" string was visible in **`rdx`**, confirming the check.
+Continuing with **`pc`**, I eventually encountered another **`strcmp`** call. This time, it was checking the *content* of `input.txt`. I used **`t`** to trace into this **`strcmp`** and then **`db`** to dump the contents of **`rcx`** and **`rdx`**. This revealed that the program expected the content of `input.txt` to be "**Lab1.exe**". My placeholder "test" string was visible in **`rdx`**, confirming the check.
 
-Knowing the required content, I modified `inputs.txt` to contain "**Lab1.exe**":
+Knowing the required content, I modified `input.txt` to contain "**Lab1.exe**":
 
 ![Modified input.txt with Lab1.exe](./assets/img/Lab1/string.png)
 
-After rerunning the dynamic analysis with the corrected `inputs.txt`, the program successfully passed all checks and displayed a "good input!" message:
+After rerunning the dynamic analysis with the corrected `input.txt`, the program successfully passed all checks and displayed a "good input!" message:
 
 ![Lab 1 Done GIF](./assets/img/Lab1/done.gif)
 

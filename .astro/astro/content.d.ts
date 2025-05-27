@@ -201,6 +201,13 @@ declare module 'astro:content' {
   collection: "post";
   data: InferEntrySchema<"post">
 } & { render(): Render[".md"] };
+"sincon2025/index.md": {
+	id: "sincon2025/index.md";
+  slug: "sincon2025";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
 "sincondragonbadge/index.md": {
 	id: "sincondragonbadge/index.md";
   slug: "sincondragonbadge";
@@ -218,6 +225,20 @@ declare module 'astro:content' {
 "sinconrfidkampung/index.md": {
 	id: "sinconrfidkampung/index.md";
   slug: "sinconrfidkampung";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
+"sinconshellshock/index.md": {
+	id: "sinconshellshock/index.md";
+  slug: "sinconshellshock";
+  body: string;
+  collection: "post";
+  data: InferEntrySchema<"post">
+} & { render(): Render[".md"] };
+"sinconwindbg/index.md": {
+	id: "sinconwindbg/index.md";
+  slug: "sinconwindbg";
   body: string;
   collection: "post";
   data: InferEntrySchema<"post">
