@@ -1,6 +1,6 @@
 ---
 title: My Trip to SinCon2025
-publishDate: 2025-05-24
+publishDate: 2025-05-28
 description: 'A recap of my trip to SinCon 2025, experiences throughout the workshop'
 tags:
   - Conference
